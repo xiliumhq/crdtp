@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Compilation.cs" />
+    <Compile Include="Intrinsics.cs" />
+    <Compile Include="Scopes\DeclaringScope.cs" />
+    <Compile Include="Scopes\HidingScope.cs" />
+    <Compile Include="Scopes\Scope.cs" />
+    <Compile Include="Symbols.Source\SourceAliasTypeSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceAnonymousEnumTypeSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceCommandSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceDomainSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceEnumTypeSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceEventSymbol.cs" />
+    <Compile Include="Symbols.Source\SourceObjectTypeSymbol.cs" />
+    <Compile Include="Symbols.Source\SourcePropertySymbol.cs" />
+    <Compile Include="Symbols.Source\SourceProtocolSymbol.cs" />
+    <Compile Include="Symbols\AliasTypeSymbol.cs" />
+    <Compile Include="Symbols\CommandSymbol.cs" />
+    <Compile Include="Symbols\DomainSymbol.cs" />
+    <Compile Include="Symbols\EnumTypeSymbol.cs" />
+    <Compile Include="Symbols\EventSymbol.cs" />
+    <Compile Include="Symbols\Intrinsics\AnonymousObjectTypeSymbol.cs" />
+    <Compile Include="Symbols\Intrinsics\ArrayTypeSymbol.cs" />
+    <Compile Include="Symbols\Intrinsics\IntrinsicTypeKind.cs" />
+    <Compile Include="Symbols\Intrinsics\IntrinsicTypeSymbol.cs" />
+    <Compile Include="Symbols\MemberSymbol.cs" />
+    <Compile Include="Symbols\ObjectTypeSymbol.cs" />
+    <Compile Include="Symbols\PropertySymbol.cs" />
+    <Compile Include="Symbols\ProtocolSymbol.cs" />
+    <Compile Include="Symbols\ProtocolVersion.cs" />
+    <Compile Include="Symbols\QualifiedType.cs" />
+    <Compile Include="Symbols\Symbol.cs" />
+    <Compile Include="Symbols\TypeQualifiers.cs" />
+    <Compile Include="Symbols\TypeSymbol.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Xilium.Core\Xilium.Core.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.Pdl\Xilium.Crdtp.Pdl.csproj" />
+  </ItemGroup>
+
+</Project>

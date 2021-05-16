@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <AssemblyName>xi-crdtp</AssemblyName>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>xi-crdtp</ToolCommandName>
+    <Description>xi-crdtp - is a .NET tool for generate C# bindings from protocol definition (PDL) files.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GenerateCommand.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="CommandLineBuilderExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Xilium.Core\Xilium.Core.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.ClientGenerator\Xilium.Crdtp.ClientGenerator.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.Sema\Xilium.Crdtp.Sema.csproj" />
+  </ItemGroup>
+
+</Project>

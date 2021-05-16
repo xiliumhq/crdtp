@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Xilium.Crdtp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ClientGenerator.cs" />
+    <Compile Include="ClientGeneratorOptions.cs" />
+    <Compile Include="CSharpCodeHelper.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="Emitters\AliasType\AliasOfDictionaryTypeEmitter.cs" />
+    <Compile Include="Emitters\AliasType\AliasOfArrayTypeEmitter.cs" />
+    <Compile Include="Emitters\AliasType\PrimitiveAliasTypeEmitter.cs" />
+    <Compile Include="Emitters\AliasType\Abstract\AliasTypeEmitter.cs" />
+    <Compile Include="Emitters\Abstract\CompilationUnitEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\Converters\StjEnumConverterEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\Converters\StjAliasConverterEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\Converters\StjConverterEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\StjSerializerOptionsEmitter.cs" />
+    <Compile Include="Emitters\ProtocolApiEmitter.cs" />
+    <Compile Include="Emitters\DomainApiEmitter.cs" />
+    <Compile Include="Emitters\Emitter.cs" />
+    <Compile Include="Emitters\EnumTypeEmitter.cs" />
+    <Compile Include="Emitters\ObjectTypeEmitter.cs" />
+    <Compile Include="Emitters\ProjectEmitter.cs" />
+    <Compile Include="Emitters\WellKnownTypes.cs" />
+    <Compile Include="Model\Emitters\WellKnownOf1TypeInfo.cs" />
+    <Compile Include="Model\Emitters\WellKnownTypeInfo.cs" />
+    <Compile Include="Model\Emitters\DomainApiTypeInfo.cs" />
+    <Compile Include="Model\EventInfo.cs" />
+    <Compile Include="Model\CommandInfo.cs" />
+    <Compile Include="Model\DomainInfo.cs" />
+    <Compile Include="Model\PropertyInfo.cs" />
+    <Compile Include="Model\SymbolInfo.cs" />
+    <Compile Include="Model\SymbolInfoFlags.cs" />
+    <Compile Include="Model\Types\EnumMemberInfo.cs" />
+    <Compile Include="Model\Types\EnumTypeInfo.cs" />
+    <Compile Include="Model\Types\AliasTypeInfo.cs" />
+    <Compile Include="Model\MemberInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\DictionaryTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\ArrayTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\AnyTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\BinaryTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\NumberTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\IntrinsicTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\BooleanTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\IntegerTypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\StringTypeInfo.cs" />
+    <Compile Include="Model\Types\SymbolObjectTypeInfo.cs" />
+    <Compile Include="Model\Types\ObjectTypeInfo.cs" />
+    <Compile Include="Model\Types\SyntheticObjectTypeInfo.cs" />
+    <Compile Include="Model\Types\TypeInfo.cs" />
+    <Compile Include="Model\Types\Intrinsics\UnitTypeInfo.cs" />
+    <Compile Include="DefaultNamingPolicy.cs" />
+    <Compile Include="NamingUtilities.cs" />
+    <Compile Include="NamingPolicy.cs" />
+    <Compile Include="OutputManager\OutputDirectoryScope.cs" />
+    <Compile Include="OutputManager\OutputItem.cs" />
+    <Compile Include="OutputManager\OutputScope.cs" />
+    <Compile Include="StjSerializationOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Xilium.Core\Xilium.Core.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.CSharp.Syntax\Xilium.Crdtp.CSharp.Syntax.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.Pdl\Xilium.Crdtp.Pdl.csproj" />
+    <ProjectReference Include="..\Xilium.Crdtp.Sema\Xilium.Crdtp.Sema.csproj" />
+  </ItemGroup>
+
+</Project>

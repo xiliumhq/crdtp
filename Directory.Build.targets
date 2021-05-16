@@ -1,0 +1,15 @@
+<Project>
+  <!-- For any non-packable projects, suppress generate documentation. -->
+  <PropertyGroup Condition="'$(IsPackable)' == 'false'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DocumentationFile />
+  </PropertyGroup>
+
+  <!-- Create local nuget feed directory, otherwise restore will fail. -->
+  <!-- TODO: enable local nuget feed if need
+  <Target Name="XiCreateLocalNugetCacheDirectory" BeforeTargets="Restore;CollectPackageReferences">
+      <MakeDir Directories="$(MSBuildThisFileDirectory)\.nuget-feed" />
+  </Target>
+  -->
+
+</Project>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="PdlFileReader.cs" />
+    <Compile Include="PdlReader.cs" />
+    <Compile Include="PdlReader.Keys.cs" />
+    <Compile Include="Syntax\CommandSyntax.cs" />
+    <Compile Include="Syntax\DomainSyntax.cs" />
+    <Compile Include="Syntax\EventSyntax.cs" />
+    <Compile Include="Syntax\NamedMemberWithParametersSyntax.cs" />
+    <Compile Include="Syntax\PropertySyntax.cs" />
+    <Compile Include="Syntax\ProtocolSyntax.cs" />
+    <Compile Include="Syntax\TypeKind.cs" />
+    <Compile Include="Syntax\TypeSyntax.cs" />
+    <Compile Include="Syntax\VersionSyntax.cs" />
+    <Compile Include="Syntax\MemberSyntax.cs" />
+    <Compile Include="PdlTypes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Xilium.Core\Xilium.Core.csproj" />
+  </ItemGroup>
+
+</Project>

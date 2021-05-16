@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;net461</TargetFrameworks>
+
+    <AssemblyName>Xilium.Core</AssemblyName>
+    <RootNamespace>Xilium</RootNamespace>
+
+    <DefineConstants>$(DefineConstants);XI_CORE_PUBLIC</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Check.Argument.cs" />
+    <Compile Include="Check.cs" />
+    <Compile Include="DebugCheck.cs" />
+    <Compile Include="Error.cs" />
+    <Compile Include="NullableAttributes.cs" />
+    <Compile Include="StringExtensions.cs" />
+  </ItemGroup>
+
+</Project>

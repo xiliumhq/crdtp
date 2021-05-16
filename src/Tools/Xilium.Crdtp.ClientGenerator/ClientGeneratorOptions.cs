@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using Xilium.Crdtp.Sema.Symbols;
+
+namespace Xilium.Crdtp
+{
+    public sealed class ClientGeneratorOptions
+    {
+        public IReadOnlyList<string> InputFiles { get; set; }
+        public string OutputPath { get; set; }
+
+        public string Namespace { get; set; } = "Xilium.Crdtp.Protocol";
+        public bool EmitDocumentation { get; set; } = true;
+        public bool EmitTypeAnalysis { get; set; } = true;
+
+        public StjSerializationOptions Stj { get; set; } // TODO: apply defaults
+
+        public string ProtocolApiTypeName { get; set; } = "ProtocolApi";
+        public string CommandRequestTypeSuffix { get; set; } = "Request";
+        public string CommandResponseTypeSuffix { get; set; } = "Response";
+        public string EventTypeSuffix { get; set; } = "Event";
+        public string DomainApiSuffix { get; set; } = "Api";
+        public string DomainHandlerSuffix { get; set; } = "Dispatcher";
+
+        public string CrdtpSessionTypeName { get; set; } = "Xilium.Crdtp.Client.CrdtpSession";
+        public bool UseApi2 { get; set; } = true;
+        public bool StructProtocolApi { get; set; } = true;
+
+        // Determines "Entry" points, allowing filter out unnecessary code.
+        public Func<DomainSymbol, bool>? DomainFilter { get; set; }
+        public Func<TypeSymbol, bool>? TypeFilter { get; set; }
+        public Func<CommandSymbol, bool>? CommandFilter { get; set; }
+        public Func<EventSymbol, bool>? EventFilter { get; set; }
+    }
+}

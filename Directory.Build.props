@@ -1,0 +1,55 @@
+<Project>
+  <!-- Defaults -->
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <Nullable>enable</Nullable>
+
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+
+    <IsPackable>false</IsPackable>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)\artifacts\</PackageOutputPath>
+  </PropertyGroup>
+
+  <!-- Packaging Defaults -->
+  <PropertyGroup>
+    <!-- PackageId -->
+    <!-- PackageVersion -->
+    <Authors>Xilium</Authors>
+    <!-- TODO: <Description></Description> -->
+    <!-- TODO: <PackageProjectUrl></PackageProjectUrl> -->
+    <!-- TODO: <PackageIcon></PackageIcon> -->
+    <Copyright>Copyright (c) 2021 Xilium</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/xiliumhq/crdtp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- TODO: PackageTags -->
+    <!-- TODO: PackageReleaseNotes -->
+
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="2.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Don't assign versions by MinVer in Debug builds. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <MinVerSkip Condition="'$(MinVerSkip)' == ''">true</MinVerSkip>
+  </PropertyGroup>
+<!--
+  <PropertyGroup>
+    <MinVerDefaultPreReleasePhase>alpha</MinVerDefaultPreReleasePhase>
+  </PropertyGroup>
+-->
+
+  <!-- Generate documentation only in release builds. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AccessKeywords.cs" />
+    <Compile Include="AccessorDeclaration.cs" />
+    <Compile Include="ArrowExpressionClause.cs" />
+    <Compile Include="Attribute.cs" />
+    <Compile Include="ClassDeclaration.cs" />
+    <Compile Include="CodeBlock.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="Constructor.cs" />
+    <Compile Include="CSharpModifiers.cs" />
+    <Compile Include="EmptyLine.cs" />
+    <Compile Include="EnumDeclaration.cs" />
+    <Compile Include="EnumValue.cs" />
+    <Compile Include="FieldDeclaration.cs" />
+    <Compile Include="IfStatement.cs" />
+    <Compile Include="Infrastructure\Extensions.cs" />
+    <Compile Include="InterfaceDeclaration.cs" />
+    <Compile Include="MethodDeclaration.cs" />
+    <Compile Include="Namespace.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="PropertyDeclaration.cs" />
+    <Compile Include="Raw.cs" />
+    <Compile Include="StructDeclaration.cs" />
+    <Compile Include="Subconstructor.cs" />
+    <Compile Include="SyntaxObject.cs" />
+    <Compile Include="TypeDeclaration.cs" />
+    <Compile Include="TypeModifiers.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="UsingNamespace.cs" />
+    <Compile Include="WhileDeclaration.cs" />
+    <Compile Include="Writer\CodeWriter.cs" />
+    <Compile Include="Writer\CSharpWriter.cs" />
+    <Compile Include="XmlDocParam.cs" />
+    <Compile Include="XmlDocumentation.cs" />
+  </ItemGroup>
+
+</Project>
