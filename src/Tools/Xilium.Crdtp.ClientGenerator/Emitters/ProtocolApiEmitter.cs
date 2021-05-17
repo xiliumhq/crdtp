@@ -104,7 +104,7 @@ namespace Xilium.Crdtp.Emitters
             {
                 typeDeclaration = new CS.StructDeclaration(
                     name: Context.Options.ProtocolApiTypeName,
-                    modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly,
+                    modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly | Context.CSharp.GetDefaultTypeModifiers(),
                     members: typeMembers);
             }
             else

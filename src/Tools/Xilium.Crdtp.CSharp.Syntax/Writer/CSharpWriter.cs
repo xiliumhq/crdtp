@@ -527,8 +527,8 @@
             if ((modifiers & TypeModifiers.Static) != 0) sb.AppendWithLeadingSpace("static");
             if ((modifiers & TypeModifiers.Abstract) != 0) sb.AppendWithLeadingSpace("abstract");
             if ((modifiers & TypeModifiers.Sealed) != 0) sb.AppendWithLeadingSpace("sealed");
-            if ((modifiers & TypeModifiers.Partial) != 0) sb.AppendWithLeadingSpace("partial");
             if ((modifiers & TypeModifiers.ReadOnly) != 0) sb.AppendWithLeadingSpace("readonly");
+            if ((modifiers & TypeModifiers.Partial) != 0) sb.AppendWithLeadingSpace("partial");
             if ((modifiers & TypeModifiers.Event) != 0) sb.AppendWithLeadingSpace("event");
             if (sb.Length > 0 && trailingSpace) sb.Append(' ');
             return sb.ToString();

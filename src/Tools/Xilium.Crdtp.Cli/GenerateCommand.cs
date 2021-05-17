@@ -8,12 +8,28 @@ namespace Xilium.Crdtp.Tools
         private string OutputPath { get; }
         private string? TargetProjectName { get; }
         private string? TargetNamespaceName { get; }
+        private bool? TargetEmitPartialTypes { get; }
+
+        private string? CommandRequestTypeSuffix { get; }
+        private string? CommandResponseTypeSuffix { get; }
+        private string? EventTypeSuffix { get; }
+
+        private string? CommandRequestAnonymousTypePrefix { get; }
+        private string? CommandResponseAnonymousTypePrefix { get; }
+        private string? EventAnonymousTypePrefix { get; }
 
         public GenerateCommand(
             IReadOnlyList<string> input,
             string outputPath,
-            string? targetProjectName,
-            string? targetNamespaceName)
+            // string? targetProjectName,
+            string? targetNamespaceName,
+            bool? targetEmitPartialTypes,
+            string? commandRequestTypeSuffix,
+            string? commandResponseTypeSuffix,
+            string? eventTypeSuffix,
+            string? commandRequestAnonymousTypePrefix,
+            string? commandResponseAnonymousTypePrefix,
+            string? eventAnonymousTypePrefix)
         {
             InputPaths = input;
             OutputPath = outputPath;
@@ -22,8 +38,17 @@ namespace Xilium.Crdtp.Tools
             // Missing options might provide some default, but somewhy it defaults to empty string, instead of null,
             // even if explicitly specified. Absense of option, and presense of option with empty value is absolutely
             // independent things. So, currently just treat empties as nulls.
-            TargetProjectName = string.IsNullOrEmpty(targetProjectName) ? null : targetProjectName;
+            TargetProjectName = null; // string.IsNullOrEmpty(targetProjectName) ? null : targetProjectName;
             TargetNamespaceName = string.IsNullOrEmpty(targetNamespaceName) ? null : targetNamespaceName;
+            TargetEmitPartialTypes = targetEmitPartialTypes;
+
+            CommandRequestTypeSuffix = string.IsNullOrEmpty(commandRequestTypeSuffix) ? null : commandRequestTypeSuffix;
+            CommandResponseTypeSuffix = string.IsNullOrEmpty(commandResponseTypeSuffix) ? null : commandResponseTypeSuffix;
+            EventTypeSuffix = string.IsNullOrEmpty(eventTypeSuffix) ? null : eventTypeSuffix;
+
+            CommandRequestAnonymousTypePrefix = string.IsNullOrEmpty(commandRequestAnonymousTypePrefix) ? null : commandRequestAnonymousTypePrefix;
+            CommandResponseAnonymousTypePrefix = string.IsNullOrEmpty(commandResponseAnonymousTypePrefix) ? null : commandResponseAnonymousTypePrefix;
+            EventAnonymousTypePrefix = string.IsNullOrEmpty(eventAnonymousTypePrefix) ? null : eventAnonymousTypePrefix;
         }
 
         public int Execute()
@@ -40,12 +65,22 @@ namespace Xilium.Crdtp.Tools
 
                 Namespace = TargetNamespaceName ?? TargetProjectName ?? "Xilium.Crdtp.Protocol",
                 EmitDocumentation = true,
+                EmitPartialTypes = TargetEmitPartialTypes ?? false,
 
                 Stj = new StjSerializationOptions
                 {
                     Enabled = true,
                     CamelCaseNamingConvention = true,
                 },
+
+                // TODO: make configurable
+                CommandRequestTypeSuffix = CommandRequestTypeSuffix ?? "Request",
+                CommandResponseTypeSuffix = CommandResponseTypeSuffix ?? "Response",
+                EventTypeSuffix = EventTypeSuffix ?? "Event",
+
+                CommandRequestAnonymousTypePrefix = CommandRequestAnonymousTypePrefix,
+                CommandResponseAnonymousTypePrefix = CommandResponseAnonymousTypePrefix,
+                EventAnonymousTypePrefix = EventAnonymousTypePrefix,
 
                 // TODO: This should be customizable. Now emitted all commands / events, but domains and types
                 // is not emitted by default. For example NetworkCached resource is no more emitted (because it is not in-use).

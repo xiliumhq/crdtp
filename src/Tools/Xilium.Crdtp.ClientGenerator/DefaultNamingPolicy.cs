@@ -26,7 +26,21 @@ namespace Xilium.Crdtp
             => NamingUtilities.Capitalize(propertySymbol.Name);
 
         public override string GetAnonymousTypeName(PropertyInfo propertyInfo)
-            => propertyInfo.ContainingType.Name + propertyInfo.Name;
+        {
+            var containingType = propertyInfo.ContainingType;
+
+            string prefix;
+            if (containingType is SyntheticObjectTypeInfo x)
+            {
+                prefix = x.GetNameForAnonymousType();
+            }
+            else
+            {
+                prefix = containingType.Name;
+            }
+
+            return prefix + propertyInfo.Name;
+        }
 
         public override string GetEnumerationMemberName(string protocolName)
             => NamingUtilities.KebabToPascalCase(protocolName);

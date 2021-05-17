@@ -64,10 +64,23 @@ namespace Xilium.Crdtp.Cli
 
                 new Option<string>("--output-path", "Specifies output directory."),
 
-                // TODO: configuration file
+                // TODO(dmitry.azaraev): (Low) generate command requires external configuration file.
 
-                new Option<string?>("--target-project-name", "Specifies target project name."),
+                // TODO: 
+                // new Option<string?>("--target-project-name", "Specifies target project name."),
+
                 new Option<string?>("--target-namespace-name", "Specifies target namespace name. When omitted, defaults to target's project name."),
+
+                new Option<bool?>("--target-emit-partial-types", () => false),
+
+                new Option<string?>("--command-request-type-suffix"),
+                new Option<string?>("--command-response-type-suffix"),
+                new Option<string?>("--event-type-suffix"),
+
+                new Option<string?>("--command-request-anonymous-type-prefix"),
+                new Option<string?>("--command-response-anonymous-type-prefix"),
+                new Option<string?>("--event-anonymous-type-prefix"),
+
             };
             command.AddAlias("gen");
 

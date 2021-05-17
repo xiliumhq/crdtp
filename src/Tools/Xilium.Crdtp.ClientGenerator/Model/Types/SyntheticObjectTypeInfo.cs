@@ -62,6 +62,30 @@ namespace Xilium.Crdtp.Model
             return name + suffix;
         }
 
+        public string GetNameForAnonymousType()
+        {
+            var name = _containingMember.Name;
+
+            var suffix = _kind switch
+            {
+                Kind.CommandParametersType
+                    => Context.Options.CommandRequestAnonymousTypePrefix
+                        ?? Context.Options.CommandRequestTypeSuffix,
+
+                Kind.CommandReturnType
+                    => Context.Options.CommandResponseAnonymousTypePrefix
+                        ?? Context.Options.CommandResponseTypeSuffix,
+
+                Kind.EventParametersType
+                    => Context.Options.EventAnonymousTypePrefix
+                        ?? Context.Options.EventTypeSuffix,
+
+                _ => throw Error.Unreachable(),
+            };
+
+            return name + suffix;
+        }
+
         public enum Kind
         {
             CommandParametersType = 1,

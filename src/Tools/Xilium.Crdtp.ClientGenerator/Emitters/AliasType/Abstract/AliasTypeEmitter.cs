@@ -225,7 +225,7 @@ namespace Xilium.Crdtp.Emitters
 
             var typeDeclaration = new CS.StructDeclaration(
                 name: typeName,
-                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly,
+                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly | Context.CSharp.GetDefaultTypeModifiers(),
                 members: typeMembers,
                 baseType: WellKnownTypes.GetIEquatableOf(TypeInfo).GetFullyQualifiedName(),
                 attributes: typeAttributes,

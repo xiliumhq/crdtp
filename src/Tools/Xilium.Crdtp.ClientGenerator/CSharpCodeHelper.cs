@@ -113,5 +113,8 @@ namespace Xilium.Crdtp
             }
             return sb.ToString();
         }
+
+        public CS.TypeModifiers GetDefaultTypeModifiers()
+            => _context.Options.EmitPartialTypes ? CS.TypeModifiers.Partial : CS.TypeModifiers.None;
     }
 }

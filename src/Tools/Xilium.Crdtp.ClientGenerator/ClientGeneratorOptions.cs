@@ -11,14 +11,23 @@ namespace Xilium.Crdtp
 
         public string Namespace { get; set; } = "Xilium.Crdtp.Protocol";
         public bool EmitDocumentation { get; set; } = true;
-        public bool EmitTypeAnalysis { get; set; } = true;
+        public bool EmitTypeAnalysis { get; set; } = false;
+        public bool EmitPartialTypes { get; set; } = false;
 
         public StjSerializationOptions Stj { get; set; } // TODO: apply defaults
 
         public string ProtocolApiTypeName { get; set; } = "ProtocolApi";
+
         public string CommandRequestTypeSuffix { get; set; } = "Request";
         public string CommandResponseTypeSuffix { get; set; } = "Response";
         public string EventTypeSuffix { get; set; } = "Event";
+
+        // Same as CommandRequestTypeSuffix, but uses other suffix for implicitly defined types.
+        // This options used only for migrating existing codebase.
+        public string? CommandRequestAnonymousTypePrefix { get; set; }
+        public string? CommandResponseAnonymousTypePrefix { get; set; }
+        public string? EventAnonymousTypePrefix { get; set; }
+
         public string DomainApiSuffix { get; set; } = "Api";
         public string DomainHandlerSuffix { get; set; } = "Dispatcher";
 

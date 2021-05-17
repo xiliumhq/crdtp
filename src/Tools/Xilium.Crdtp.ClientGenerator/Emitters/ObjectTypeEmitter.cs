@@ -80,7 +80,7 @@ namespace Xilium.Crdtp.Emitters
 
             var typeDeclaration = new CS.ClassDeclaration(
                 name: _typeInfo.Name,
-                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.Sealed,
+                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.Sealed | Context.CSharp.GetDefaultTypeModifiers(),
                 members: typeMembers,
                 baseType: null,
                 attributes: typeAttributes,

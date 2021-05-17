@@ -155,7 +155,7 @@ namespace Xilium.Crdtp.Emitters
 
             var domainApiTypeDecl = new CS.StructDeclaration(
                 name: _domainApiTypeInfo.Name,
-                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly,
+                modifiers: CS.TypeModifiers.Public | CS.TypeModifiers.ReadOnly | Context.CSharp.GetDefaultTypeModifiers(),
                 members: domainApiTypeMembers,
                 baseType: null,
                 attributes: domainApiTypeAttributes,
