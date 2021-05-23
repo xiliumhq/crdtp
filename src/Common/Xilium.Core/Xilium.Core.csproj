@@ -15,6 +15,7 @@
     <Compile Include="DebugCheck.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="NullableAttributes.cs" />
+    <Compile Include="ModuleInitializerAttribute.cs" />
     <Compile Include="StringExtensions.cs" />
   </ItemGroup>
 

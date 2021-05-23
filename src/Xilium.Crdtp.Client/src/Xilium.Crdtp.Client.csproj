@@ -1,0 +1,93 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;netstandard2.0;net461</TargetFrameworks>
+<!--
+    <TargetFrameworks>
+      netcoreapp2.0;
+      netcoreapp2.1;
+      netcoreapp2.2;
+      netcoreapp3.0;
+      netcoreapp3.1;
+      net5.0;
+
+      netstandard2.0;
+      netstandard2.1;
+
+      net461;
+      net462;
+      net47;
+      net471;
+      net472;
+      net48;
+    </TargetFrameworks>
+-->
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <IsPackable>true</IsPackable>
+    <Description>Client library which let you to communicate with agent hosts based on Chrome DevTools Protocol, specifically Chromium, Chrome and other Blink-based browsers.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Common\Xilium.Core\Check.Argument.cs" Link="Xilium.Core\Check.Argument.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\Check.cs" Link="Xilium.Core\Check.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\DebugCheck.cs" Link="Xilium.Core\DebugCheck.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\Error.cs" Link="Xilium.Core\Error.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\NullableAttributes.cs" Link="Xilium.Core\NullableAttributes.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\ModuleInitializerAttribute.cs" Link="Xilium.Core\ModuleInitializerAttribute.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\StringExtensions.cs" Link="Xilium.Core\StringExtensions.cs" />
+    <Compile Include="Api\IClientApi.cs" />
+    <Compile Include="Api\ISessionApi.cs" />
+    <Compile Include="Buffers\CrdtpArrayBufferWriter.cs" />
+    <Compile Include="Compat.cs" />
+    <Compile Include="Connections\CrdtpWebSocketConnection.cs" />
+    <Compile Include="Core\Unit.cs" />
+    <Compile Include="CrdtpClient+ConnectionDelegate.cs" />
+    <Compile Include="CrdtpClient.cs" />
+    <Compile Include="CrdtpClientHandler.cs" />
+    <Compile Include="CrdtpClientState.cs" />
+    <Compile Include="CrdtpConnection.cs" />
+    <Compile Include="CrdtpConnectionDelegate.cs" />
+    <Compile Include="CrdtpConnectionReader.cs" />
+    <Compile Include="CrdtpConnectionState.cs" />
+    <Compile Include="CrdtpEncoding.cs" />
+    <Compile Include="CrdtpErrorResponse.cs" />
+    <Compile Include="CrdtpLogger.cs" />
+    <Compile Include="CrdtpRequestCompletionSourceHelper.cs" />
+    <Compile Include="CrdtpSessionHandler.cs" />
+    <Compile Include="Exceptions\CrdtpConnectionException.cs" />
+    <Compile Include="Exceptions\CrdtpErrorResponseException.cs" />
+    <Compile Include="CrdtpFeatures.cs" />
+    <Compile Include="CrdtpRequest.cs" />
+    <Compile Include="CrdtpRequest`1.cs" />
+    <Compile Include="CrdtpResponse`1.cs" />
+    <Compile Include="CrdtpSession.cs" />
+    <Compile Include="Dispatching\CrdtpDispatchContext.cs" />
+    <Compile Include="Dispatching\CrdtpDispatcher.cs" />
+    <Compile Include="Dispatching\Dispatchable.cs" />
+    <Compile Include="Dispatching\EventHandlerDispatcher.cs" />
+    <Compile Include="Internals\Pools.cs" />
+    <Compile Include="Logging\CrdtpConsoleLogger.cs" />
+    <Compile Include="ObjectPool\DefaultObjectPool.cs" />
+    <Compile Include="ObjectPool\DefaultObjectPoolProvider.cs" />
+    <Compile Include="ObjectPool\DefaultPooledObjectPolicy.cs" />
+    <Compile Include="ObjectPool\ObjectPool.cs" />
+    <Compile Include="ObjectPool\ObjectPool`1.cs" />
+    <Compile Include="ObjectPool\ObjectPoolProvider.cs" />
+    <Compile Include="ObjectPool\PooledObjectPolicy.cs" />
+    <Compile Include="Serialization\Cbor\CborHelper.cs" />
+    <Compile Include="Serialization\DispatchableParser.cs" />
+    <Compile Include="Serialization\Stj\Converters\UnitJsonConverter.cs" />
+    <Compile Include="Serialization\Stj\DefaultStjSerializerOptions.cs" />
+    <Compile Include="Serialization\Stj\StjJsonSerializerOptionsBuilder.cs" />
+    <Compile Include="Serialization\Stj\StjOptions.cs" />
+    <Compile Include="Serialization\Stj\StjSerializerOptions.cs" />
+    <Compile Include="Serialization\StjEncodedProperties.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0' ">
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+  </ItemGroup>
+  
+</Project>
