@@ -32,6 +32,7 @@ namespace Xilium.Crdtp.Client.Serialization
             return new JsonConverter[]
             {
                 new DoubleJsonConverter(),
+                new StringJsonConverter(),
 
                 // TODO(dmitry.azaraev): Serializing/Deserializing Unit type is should not be needed, but need do some tests before removal.
                 new UnitJsonConverter()
