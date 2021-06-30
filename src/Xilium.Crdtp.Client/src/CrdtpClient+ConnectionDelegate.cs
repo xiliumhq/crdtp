@@ -55,8 +55,11 @@ namespace Xilium.Crdtp.Client
                 }
                 catch (Exception ex)
                 {
+                    // TODO: always specify (e.g. default handler) in CrdtpClient ctor,
+                    // and assume what it is always present. By default it should
+                    // return false (meaning exception is unhandled) and abort client.
                     var handler = _client._handler;
-                    if (handler != null && !handler.OnUnhandledException(ex))
+                    if (handler == null || !handler.OnUnhandledException(ex))
                     {
                         _client.Abort(ex);
                     }
