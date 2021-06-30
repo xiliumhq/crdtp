@@ -29,8 +29,13 @@ namespace Xilium.Crdtp.Client.Serialization
 
         protected override ICollection<JsonConverter> GetConvertersCore()
         {
-            // TODO(dmitry.azaraev): Serializing/Deserializing Unit type is should not be needed, but need do some tests before removal.
-            return new[] { new UnitJsonConverter() };
+            return new JsonConverter[]
+            {
+                new DoubleJsonConverter(),
+
+                // TODO(dmitry.azaraev): Serializing/Deserializing Unit type is should not be needed, but need do some tests before removal.
+                new UnitJsonConverter()
+            };
         }
     }
 }

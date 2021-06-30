@@ -78,6 +78,7 @@
     <Compile Include="ObjectPool\PooledObjectPolicy.cs" />
     <Compile Include="Serialization\Cbor\CborHelper.cs" />
     <Compile Include="Serialization\DispatchableParser.cs" />
+    <Compile Include="Serialization\Stj\Converters\DoubleJsonConverter.cs" />
     <Compile Include="Serialization\Stj\Converters\UnitJsonConverter.cs" />
     <Compile Include="Serialization\Stj\DefaultStjSerializerOptions.cs" />
     <Compile Include="Serialization\Stj\StjJsonSerializerOptionsBuilder.cs" />
