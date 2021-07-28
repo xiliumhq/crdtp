@@ -23,6 +23,8 @@
     </TargetFrameworks>
 -->
 
+    <DefineConstants Condition=" '$(TargetFramework)' == 'net461' ">$(DefineConstants);XI_CRDTP_WEBSOCKET_NET461_COMPAT</DefineConstants>
+
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <IsPackable>true</IsPackable>
@@ -91,5 +93,9 @@
   <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0' ">
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>
-  
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="System.Net.WebSockets.Client.Managed" Version="1.0.22" />
+  </ItemGroup>
+
 </Project>

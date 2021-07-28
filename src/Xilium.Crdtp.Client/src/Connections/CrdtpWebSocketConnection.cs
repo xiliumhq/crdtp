@@ -3,6 +3,7 @@
 // TODO: reorganize this code. At top level this should depends which interface we should use (with value-based results)
 // second, is regardless of interface, underlying implementation might or might not require synchronization.
 // Current assumption what presense of value-based results doesn't require synchronization is might be wrong.
+
 #if NETSTANDARD2_1 || NETCOREAPP2_1_OR_GREATER
 #define HasValueSendAsync
 #define HasValueReceiveAsync
@@ -23,9 +24,20 @@ using System.Runtime.InteropServices;
 
 namespace Xilium.Crdtp.Client
 {
+    using TClientWebSocket =
+#if XI_CRDTP_WEBSOCKET_NET461_COMPAT
+        WebSocket
+#else
+        ClientWebSocket
+#endif
+        ;
+
     public sealed class CrdtpWebSocketConnection : CrdtpConnection
     {
-        private readonly ClientWebSocket _socket;
+        private static readonly TimeSpan s_defaultKeepAliveInterval = TimeSpan.Zero;
+        // _socket.Options.SetBuffer(64 * 1024, 64 * 1024);
+
+        private readonly TClientWebSocket _socket;
         private readonly Uri _endpoint;
 
 #if WS_REQUIRE_SYNCHRONIZATION
@@ -40,9 +52,32 @@ namespace Xilium.Crdtp.Client
             : base(handler)
         {
             _endpoint = url;
-            _socket = new ClientWebSocket();
-            _socket.Options.KeepAliveInterval = TimeSpan.Zero;
+            _socket = CreateSocket();
+        }
+
+        private static TClientWebSocket CreateSocket()
+        {
+#if !XI_CRDTP_WEBSOCKET_NET461_COMPAT
+            var socket = new ClientWebSocket();
+            socket.Options.KeepAliveInterval = s_defaultKeepAliveInterval;
             // _socket.Options.SetBuffer(64 * 1024, 64 * 1024);
+#else
+            // Uses system's web socket implementation or fallback to alternative implementation
+            // on Windows 7, Vista SP2, Windows Server 2008 (available for .NETv4.6 +).
+            var socket = System.Net.WebSockets.SystemClientWebSocket.CreateClientWebSocket();
+
+            switch (socket)
+            {
+                case System.Net.WebSockets.ClientWebSocket x:
+                    x.Options.KeepAliveInterval = s_defaultKeepAliveInterval;
+                    break;
+
+                case System.Net.WebSockets.Managed.ClientWebSocket x:
+                    x.Options.KeepAliveInterval = s_defaultKeepAliveInterval;
+                    break;
+            }
+#endif
+            return socket;
         }
 
         protected override void DisposeCore()
