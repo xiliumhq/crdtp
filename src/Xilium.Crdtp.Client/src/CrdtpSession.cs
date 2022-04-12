@@ -22,7 +22,7 @@ namespace Xilium.Crdtp.Client
     public sealed class CrdtpSession : Api.ISessionApi
     {
         private readonly string? _sessionId;
-        private readonly CrdtpSessionHandler? _handler;
+        private readonly CrdtpSessionHandler _handler;
         private int _callIdGen;
 
         internal readonly object StateAndRequestMapLock = new object();
@@ -47,7 +47,7 @@ namespace Xilium.Crdtp.Client
                 _sessionId = sessionId;
                 _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
             }
-            _handler = handler;
+            _handler = handler ?? DefaultSessionHandler.Instance;
             _requests = new Dictionary<int, CrdtpRequest>();
             _eventDispatchers = new Dictionary<string, CrdtpDispatcher>();
         }
@@ -78,7 +78,7 @@ namespace Xilium.Crdtp.Client
             {
                 _isAttached = true;
                 _client = client;
-                _handler?.OnAttach();
+                _handler.OnAttach();
             }
         }
 
@@ -91,7 +91,7 @@ namespace Xilium.Crdtp.Client
                 _isAttached = false;
                 _client = null;
                 CancelPendingRequests(); // TODO: this can be called outside of the lock, or from Attach/Detach methods
-                _handler?.OnDetach();
+                _handler.OnDetach();
             }
         }
 
@@ -125,7 +125,10 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        // TODO(dmitry.azaraev): (Low) AggresiveInline
+        // TODO(dmitry.azaraev): Move GetNextCallId to SessionHandler, this will
+        // be useful to creating transitive id generation for client (instead of
+        // id generation per-session). Transitive IDs are bit more easy to
+        // use in log analysis.
         public int GetNextCallId() => Interlocked.Increment(ref _callIdGen);
 
         // TODO(dmitry.azaraev): (Low) AggresiveInline
@@ -200,7 +203,7 @@ namespace Xilium.Crdtp.Client
             TRequest parameters,
             CancellationToken cancellationToken = default)
         {
-            // cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfNotAttached();
             // Debugger.NotifyOfCrossThreadDependency();
             // TODO: Enable checks above when tests be more robust.
@@ -209,6 +212,15 @@ namespace Xilium.Crdtp.Client
             if (client == null) ThrowNotAttached();
 
             Check.That(client.Encoding == CrdtpEncoding.Json);
+
+            // Validate command before send
+            {
+                var maybeError = _handler.OnBeforeSend(method);
+                if (maybeError != null)
+                {
+                    return Task.FromResult(new CrdtpResponse<TResponse>(maybeError));
+                }
+            }
 
             var callId = GetNextCallId();
             var bufferWriter = SerializeRequest(callId, method, parameters);
@@ -474,6 +486,18 @@ namespace Xilium.Crdtp.Client
         {
             // TODO: Simplify message.
             throw Error.InvalidOperation($"{nameof(CrdtpSession)} in invalid state (\"Detached\") for this operation. Valid states are: \"Attached\".");
+        }
+
+        private sealed class DefaultSessionHandler : CrdtpSessionHandler
+        {
+            public static DefaultSessionHandler Instance { get; } = new();
+
+            protected internal override void OnAttach() { }
+
+            protected internal override void OnDetach() { }
+
+            protected internal override CrdtpErrorResponse? OnBeforeSend(JsonEncodedText method)
+                => null;
         }
     }
 }

@@ -3,9 +3,10 @@
 namespace Xilium.Crdtp.Client
 {
     // TODO(dmitry.azaraev): (Low) Make CrdtpError type free from STJ dependency, and use Converter or explicit parser to read it.
+    // TODO: Make instances of this class to be immutable.
     public sealed class CrdtpErrorResponse
     {
-        public CrdtpErrorResponse(int code, string message, string? data)
+        public CrdtpErrorResponse(int code, string message, string? data = null)
         {
             Code = code;
             Message = message;

@@ -21,6 +21,7 @@ namespace Xilium.Crdtp.Client.Api
         // CrdtpClient? TryGetClient(out CrdtpClient? client);
 
         void CancelPendingRequests();
+        // TODO: Add CancelPendingRequests with request filter
 
         #region Commands
 
