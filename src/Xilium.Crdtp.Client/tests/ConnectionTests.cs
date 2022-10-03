@@ -84,7 +84,10 @@ namespace Xilium.Crdtp.Client.Tests
 
             await testConnection.CloseAsync();
             Assert.Equal(CrdtpConnectionState.Closed, testConnection.State);
-            // TODO: Fix me, it expects what OnCloseCalledOnce, but current version not follow this.
+            // TODO: Fix me, it starts to fail by 9262c494e3c9869071a740b98e71718d1eecd826
+            // commit. For connections which implements Reader is racy by design, because
+            // when reader ends - it closes connection, and when we ask connection to close
+            // it also ends.
             Assert.True(testConnectionDelegate.OnCloseCalledOnce);
         }
 
