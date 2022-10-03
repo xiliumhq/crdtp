@@ -1,6 +1,7 @@
 ﻿// #define XI_CRDTPCONNECTION_ASYNCDISPOSABLE
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,27 +46,54 @@ namespace Xilium.Crdtp.Client
         {
             if (disposing)
             {
+                bool shouldDispose = false;
                 lock (StateUpdateLock)
                 {
-                    DisposeInternal();
+                    if (!_disposed)
+                    {
+                        _disposed = shouldDispose = true;
+                        if (_state < CrdtpConnectionState.Closing)
+                        {
+                            _state = CrdtpConnectionState.Closing;
+                        }
+                    }
                 }
-            }
-        }
 
-        private void DisposeInternal()
-        {
-            DebugCheck.That(Monitor.IsEntered(StateUpdateLock), $"{nameof(StateUpdateLock)} should be held.");
-            if (!_disposed)
-            {
-                _disposed = true;
-
-                _reader?.Dispose();
-                DisposeCore();
-
-                if (_state < CrdtpConnectionState.Closed)
+                if (shouldDispose)
                 {
-                    _state = CrdtpConnectionState.Closed;
-                    Delegate.OnClose();
+                    List<Exception>? exceptions = null;
+                    try
+                    {
+                        _reader?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        (exceptions ??= new()).Add(ex);
+                    }
+
+                    try
+                    {
+                        DisposeCore();
+                    }
+                    catch (Exception ex)
+                    {
+                        (exceptions ??= new()).Add(ex);
+                    }
+
+                    lock (StateUpdateLock)
+                    {
+                        if (_state < CrdtpConnectionState.Closed)
+                        {
+                            _state = exceptions == null ?
+                                CrdtpConnectionState.Closed :
+                                CrdtpConnectionState.Aborted;
+                        }
+                    }
+
+                    if (exceptions == null)
+                        Delegate.OnClose();
+                    else
+                        Delegate.OnAbort(exceptions);
                 }
             }
         }
@@ -139,8 +167,9 @@ namespace Xilium.Crdtp.Client
             {
                 ThrowIfInvalidState(CrdtpConnectionState.Connecting);
                 _state = CrdtpConnectionState.Open;
-                Delegate.OnOpen();
             }
+
+            Delegate.OnOpen();
 
             StartReader();
         }
@@ -177,10 +206,11 @@ namespace Xilium.Crdtp.Client
                 if (_state == CrdtpConnectionState.Closing)
                 {
                     _state = CrdtpConnectionState.Closed;
-                    Delegate.OnClose();
                 }
             }
 
+            // TODO: OnAbort & OnClose. We should call abort or close, not both?
+            Delegate.OnClose();
             Dispose();
         }
 
@@ -198,6 +228,7 @@ namespace Xilium.Crdtp.Client
                 _state = CrdtpConnectionState.Aborted;
             }
 
+            // TODO: OnAbort & OnClose. We should call abort or close, not both?
             Delegate.OnAbort(exception);
             Dispose();
         }

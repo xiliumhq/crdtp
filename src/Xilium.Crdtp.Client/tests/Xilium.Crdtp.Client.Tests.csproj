@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="ConnectionTests.cs" />
+    <Compile Include="CrdtpClientDisposeDeadlockTest.cs" />
     <Compile Include="CrdtpSessionTests.cs" />
     <Compile Include="CrdtpClientTests.cs" />
     <Compile Include="Helpers\FakeConnection.cs" />
