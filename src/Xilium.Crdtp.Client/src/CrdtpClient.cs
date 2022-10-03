@@ -13,6 +13,9 @@ namespace Xilium.Crdtp.Client
 #if XI_CRDTPCLIENT_ASYNCDISPOSABLE
         , IAsyncDisposable
 #endif
+#if XI_CRDTP_USE_INTERNAL_API_INTERFACES
+        , IClientApi
+#endif
     {
         private static readonly StjJsonSerializerOptionsBuilder s_jsonSerializerOptionsBuilder = CreateJsonSerializerOptionsBuilder();
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +17,10 @@ namespace Xilium.Crdtp.Client
     // TODO(dmitry.azaraev): (CrdtpSession) Consider to use more simplier request queue, HashSet/Dictionary+lock is generally better,
     // or lock-free table, or some different. There is almost zero concurrency for single session.
 
-    public sealed class CrdtpSession : Api.ISessionApi
+    public sealed class CrdtpSession
+#if XI_CRDTP_USE_INTERNAL_API_INTERFACES
+        : ISessionApi
+#endif
     {
         private readonly string? _sessionId;
         private readonly CrdtpSessionHandler _handler;
@@ -54,8 +55,10 @@ namespace Xilium.Crdtp.Client
 
         public string? SessionId => _sessionId;
 
+        // TODO: No need special IsAttached flag, it is effectively same as `_client != null`;
         public bool IsAttached => _isAttached;
 
+        // TODO: Remove GetClientOrDefault, and make GetClient() returning nullable reference.
         public CrdtpClient GetClient()
         {
             var client = _client;

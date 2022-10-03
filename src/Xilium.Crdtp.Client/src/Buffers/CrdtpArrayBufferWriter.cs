@@ -18,7 +18,8 @@ namespace Xilium.Crdtp.Buffers
     /// Alternative implementation of <see cref="System.Buffers.ArrayBufferWriter{T}" />.
     /// There is two main differences: this implementation uses <c>GC.AllocateUninitializedArray</c>
     /// when this appropriate, and <see cref="CrdtpArrayBufferWriter{T}.Clear"/>
-    /// method doesn't zeroing array.
+    /// method doesn't zeroing array (if T is reference type or contains
+    /// reference types - Clear method still clear underlying array).
     /// </summary>
     internal sealed class CrdtpArrayBufferWriter<T> : IBufferWriter<T>
     {

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if XI_CRDTP_USE_INTERNAL_API_INTERFACES
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Xilium.Crdtp.Client.Serialization;
 
-namespace Xilium.Crdtp.Client.Api
+namespace Xilium.Crdtp.Client
 {
-    // TODO: Remove API interfaces when they are no more needed.
-
     internal interface IClientApi : IDisposable // TODO: IAsyncDisposable -> same as CloseAsync but did not throw exception.
     {
         CrdtpClientState State { get; }
@@ -29,6 +23,6 @@ namespace Xilium.Crdtp.Client.Api
         // bool TryDetach(CrdtpSession session);
 
         bool TryGetSession(string? sessionId, [NotNullWhen(true)] out CrdtpSession? session);
-
     }
 }
+#endif
