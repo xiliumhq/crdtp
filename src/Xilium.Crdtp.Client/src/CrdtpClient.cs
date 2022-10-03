@@ -27,6 +27,7 @@ namespace Xilium.Crdtp.Client
         private readonly object StateAndSessionMapLock = new object();
         private CrdtpClientState _state;
         private bool _disposed;
+        // TODO: Remove _defaultSession? (And just put it in _sessions dictionary)
         private CrdtpSession? _defaultSession;
         private readonly Dictionary<string, CrdtpSession> _sessions;
 
@@ -38,6 +39,10 @@ namespace Xilium.Crdtp.Client
             _handler = handler;
             _logger = logger;
             _encoding = _connection.Encoding;
+            // TODO: Add _connection.Framing option (Raw, RawWithTrailingZero)
+            // Valid framing: Json/Cbor => RAW. RawWithZero only with Json.
+            // TODO: Add _connection.SetDelegate(), and obsolete this ctor.
+            // So, connection factory will be not needed at all.
             _sessions = new Dictionary<string, CrdtpSession>();
         }
 
@@ -74,7 +79,10 @@ namespace Xilium.Crdtp.Client
                         // Dispose method is not intended.
                         DisposeSessions();
 
-                        DebugCheck.That(_state >= CrdtpClientState.Closed);
+                        // TODO: Not sure, this check removed, because client's
+                        // state basically driven by connection.
+                        // Alternatively, OnClose() can be called right here?
+                        // DebugCheck.That(_state >= CrdtpClientState.Closed);
                         DebugCheck.That(_defaultSession == null);
                         DebugCheck.That(_sessions.Count == 0);
                     }
@@ -170,6 +178,8 @@ namespace Xilium.Crdtp.Client
                     var client = session.GetClientOrDefault();
                     if (client != null) throw Error.InvalidOperation("Given session already attached.");
 
+                    // TODO: This seems strange what EventDispatcherMapLock is
+                    // never used, except this place.
                     lock (session.EventDispatcherMapLock)
                     {
                         AddSessionOrThrow(session);
@@ -181,6 +191,7 @@ namespace Xilium.Crdtp.Client
 
         public void Detach(CrdtpSession session)
         {
+            // TODO: Validate what session belongs to this client
             lock (StateAndSessionMapLock)
             {
                 // TODO: validate state, detach only on None and Open states.
@@ -238,18 +249,11 @@ namespace Xilium.Crdtp.Client
             }
             else
             {
-                // TODO: .net 5 Remove(key, out var sessionToRemove)
-
-                // TODO: take lock, and move out from concurrent dictionary.
-                if (_sessions.TryGetValue(sessionId, out var sessionToRemove))
-                {
-                    if ((object)session == sessionToRemove)
-                    {
-                        return _sessions.Remove(sessionId);
-                    }
-                }
-
-                return false;
+#if DEBUG
+                var found = _sessions.TryGetValue(sessionId, out var sessionToRemove);
+                DebugCheck.That(found && (object)session == sessionToRemove);
+#endif
+                return _sessions.Remove(sessionId);
             }
         }
 
@@ -289,22 +293,24 @@ namespace Xilium.Crdtp.Client
 
         internal void OnOpen()
         {
+            // TODO: OnOpen - call handler outside lock scope?
             lock (StateAndSessionMapLock)
             {
                 Check.That(_state == CrdtpClientState.None);
                 _state = CrdtpClientState.Open;
-                _handler?.OnOpen();
+                _handler?.OnOpen(); // TODO: try/catch
             }
         }
 
         internal void OnClose()
         {
+            // TODO: OnClose - call handler outside lock scope?
             lock (StateAndSessionMapLock)
             {
                 if (_state < CrdtpClientState.Closed)
                 {
                     _state = CrdtpClientState.Closed;
-                    _handler?.OnClose();
+                    _handler?.OnClose(); // TODO: try/catch
                     Dispose();
                 }
             }
@@ -312,12 +318,13 @@ namespace Xilium.Crdtp.Client
 
         internal void OnAbort(Exception? exception)
         {
+            // TODO: OnAbort - call handler outside lock scope?
             lock (StateAndSessionMapLock)
             {
                 if (_state < CrdtpClientState.Closed)
                 {
                     _state = CrdtpClientState.Aborted;
-                    _handler?.OnAbort(exception);
+                    _handler?.OnAbort(exception); // TODO: try/catch
                     Dispose();
                 }
             }

@@ -84,6 +84,7 @@ namespace Xilium.Crdtp.Client.Tests
 
             await testConnection.CloseAsync();
             Assert.Equal(CrdtpConnectionState.Closed, testConnection.State);
+            // TODO: Fix me, it expects what OnCloseCalledOnce, but current version not follow this.
             Assert.True(testConnectionDelegate.OnCloseCalledOnce);
         }
 

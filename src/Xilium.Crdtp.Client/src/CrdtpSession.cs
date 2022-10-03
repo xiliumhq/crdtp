@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -53,6 +54,7 @@ namespace Xilium.Crdtp.Client
             _eventDispatchers = new Dictionary<string, CrdtpDispatcher>();
         }
 
+        // TODO: Make SessionId non-nullable, for root session holds empty string.
         public string? SessionId => _sessionId;
 
         // TODO: No need special IsAttached flag, it is effectively same as `_client != null`;
@@ -353,6 +355,14 @@ namespace Xilium.Crdtp.Client
 
                     encoder.Flush();
 
+                    // TODO: Framing: RawWithTrailingZero
+                    //if (_client.Framing == RawWithTrailingZero)
+                    //{
+                    //    var span = bufferWriter.GetSpan(1);
+                    //    span[0] = 0;
+                    //    bufferWriter.Advance(1);
+                    //}
+
                     shouldReturnBufferWriter = false;
                     return bufferWriter;
                 }
@@ -423,6 +433,7 @@ namespace Xilium.Crdtp.Client
         {
             lock (StateAndRequestMapLock)
             {
+                // TODO: .NET 5, use single call, e.g. _requests.Remove(callId, out var request)
                 if (!_requests.TryGetValue(callId, out var request))
                     throw Error.InvalidOperation("Request with given id not found."); // TODO: Emit event
 

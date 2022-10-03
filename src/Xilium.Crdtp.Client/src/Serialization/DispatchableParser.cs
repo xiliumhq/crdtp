@@ -7,6 +7,7 @@ namespace Xilium.Crdtp.Client.Serialization
     internal static class DispatchableParser
     {
         // TODO(dmitry.azaraev): (Low) This should be true shallow parser for JSON, but need some benchmarks first.
+        // TODO: Use ValueTextEquals(ReadOnlySpan<byte> utf8Text) instead of string
         public static Dispatchable Parse(ReadOnlySpan<byte> message)
         {
             // TODO(dmitry.azaraev): Do shallow parsing to Dispatchable and run dispatch with client.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Xilium
 {
@@ -36,9 +37,17 @@ namespace Xilium
         }
 
         [Conditional("DEBUG"), DebuggerHidden]
+        [DoesNotReturn]
         public static void Unreachable()
         {
             throw new InvalidOperationException("Unreachable.");
+        }
+
+        [Conditional("DEBUG"), DebuggerHidden]
+        [DoesNotReturn]
+        public static void Unreachable(string message)
+        {
+            throw new InvalidOperationException("Unreachable. " + message);
         }
     }
 }
