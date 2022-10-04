@@ -1,8 +1,8 @@
 ﻿namespace Xilium.Chromium.DevTools.Syntax
 {
-
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
 
@@ -336,39 +336,49 @@
         private void Visit(XmlDocumentation node)
         {
             if (node == null) return;
+
+            // TODO: Use XmlWriter to build whole doc comment.
             if (!string.IsNullOrWhiteSpace(node.Summary))
             {
-                if (node.Summary.Length > 40 || node.Summary.IndexOf('\n') > -1)
+                var summaryText = EscapeXml(node.Summary);
+
+                if (summaryText.Length > 40 || summaryText.IndexOf('\n') > -1)
                 {
                     _writer.WriteLine("/// <summary>");
-                    foreach (var summaryLine in node.Summary.Split('\n'))
+                    foreach (var summaryLine in summaryText.Split('\n'))
                         _writer.WriteLine($"/// {summaryLine.Replace("\r", string.Empty, StringComparison.OrdinalIgnoreCase)}");
                     _writer.WriteLine("/// </summary>");
                 }
                 else
                 {
-                    _writer.WriteLine($"/// <summary>{node.Summary}</summary>");
+                    _writer.WriteLine($"/// <summary>{summaryText}</summary>");
                 }
             }
 
             foreach (var param in node.ParamList)
             {
-                if (!string.IsNullOrWhiteSpace(param.Name))
+                if (string.IsNullOrEmpty(param.Name))
+                    throw new InvalidOperationException("param.Name == null");
+
+                if (!string.IsNullOrWhiteSpace(param.Description))
                 {
+                    var paramDescriptionText = EscapeXml(param.Description);
+
                     const int MAX_LINE = 120;
-                    var len = 27 + param.Name.Length + param.Description?.Length ?? 0;
-                    var isMultiLine = param.Description?.Contains('\n');
+                    var len = 27 + param.Name.Length + paramDescriptionText?.Length ?? 0;
+                    var isMultiLine = paramDescriptionText?.Contains('\n');
+
                     if (len > MAX_LINE || isMultiLine.HasValue && isMultiLine.Value)
                     {
                         _writer.WriteLine($"/// <param name=\"{param.Name}\">");
-                        foreach (var line in param.Description?.Split('\n'))
+                        foreach (var line in paramDescriptionText?.Split('\n'))
                             _writer.WriteLine($"/// {line.Replace("\r", string.Empty, StringComparison.OrdinalIgnoreCase)}");
                         _writer.WriteLine("/// </param>");
                     }
                     else
                     {
                         _writer.Write($"/// <param name=\"{param.Name}\">");
-                        _writer.Write(param.Description);
+                        _writer.Write(paramDescriptionText);
                         _writer.WriteLine("</param>");
                     }
                 }
@@ -585,6 +595,23 @@
             _writer.Unindent();
             _writer.Write("}");
             _writer.WriteLine(terminateStatement ? ";" : "");
+        }
+
+        [return: NotNullIfNotNull("text")]
+        private static string? EscapeXml(string? text)
+        {
+            if (string.IsNullOrEmpty(text)) return null;
+
+            var summaryTextBuilder = new StringBuilder();
+            using (var writer = System.Xml.XmlWriter.Create(summaryTextBuilder,
+                new System.Xml.XmlWriterSettings
+                {
+                    ConformanceLevel = System.Xml.ConformanceLevel.Fragment,
+                }))
+            {
+                writer.WriteString(text);
+            }
+            return summaryTextBuilder.ToString();
         }
     }
 }

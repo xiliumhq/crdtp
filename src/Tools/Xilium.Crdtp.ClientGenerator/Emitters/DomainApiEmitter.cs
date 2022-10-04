@@ -115,7 +115,7 @@ namespace Xilium.Crdtp.Emitters
                 }
 
                 var method = new CS.MethodDeclaration(
-                    name: command.Name + "Async",
+                    name: command.Name + "Async", // TODO: Use NamingPolicy
                     parameters: methodParameters,
                     returnParameter: methodReturnParameter,
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.ReadOnly,
