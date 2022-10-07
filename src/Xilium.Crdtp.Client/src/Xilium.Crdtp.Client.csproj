@@ -57,7 +57,10 @@
     <Compile Include="Dispatching\Dispatchable.cs" />
     <Compile Include="Dispatching\EventHandlerDispatcher.cs" />
     <Compile Include="Internals\Pools.cs" />
+    <Compile Include="Internals\ValueStringBuilder.cs" />
     <Compile Include="Logging\CrdtpConsoleLogger.cs" />
+    <Compile Include="Logging\CrdtpMessageWriterOptions.cs" />
+    <Compile Include="Logging\CrdtpUtf16MessageWriter.cs" />
     <Compile Include="ObjectPool\DefaultObjectPool.cs" />
     <Compile Include="ObjectPool\DefaultObjectPoolProvider.cs" />
     <Compile Include="ObjectPool\DefaultPooledObjectPolicy.cs" />

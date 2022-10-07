@@ -11,6 +11,7 @@
     <Compile Include="CrdtpClientDisposeDeadlockTest.cs" />
     <Compile Include="CrdtpSessionTests.cs" />
     <Compile Include="CrdtpClientTests.cs" />
+    <Compile Include="CrdtpUtf16MessageWriterTest.cs" />
     <Compile Include="Helpers\FakeConnection.cs" />
     <Compile Include="Helpers\FakeConnectionDelegate.cs" />
     <Compile Include="TestSessionApi.cs" />
