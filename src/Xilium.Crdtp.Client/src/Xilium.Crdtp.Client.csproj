@@ -30,6 +30,8 @@
     <Compile Include="Api\ISessionApi.cs" />
     <Compile Include="Buffers\CrdtpArrayBufferWriter.cs" />
     <Compile Include="Compat.cs" />
+    <Compile Include="Connections\CrdtpPipeConnection.cs" />
+    <Compile Include="Connections\CrdtpPipeJsonConnection.cs" />
     <Compile Include="Connections\CrdtpWebSocketConnection.cs" />
     <Compile Include="Core\Unit.cs" />
     <Compile Include="CrdtpClient+ConnectionDelegate.cs" />
