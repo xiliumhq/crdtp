@@ -46,6 +46,7 @@
     <Compile Include="CrdtpErrorResponse.cs" />
     <Compile Include="CrdtpLogger.cs" />
     <Compile Include="CrdtpRequestCompletionSourceHelper.cs" />
+    <Compile Include="CrdtpResponse.cs" />
     <Compile Include="CrdtpSessionHandler.cs" />
     <Compile Include="Exceptions\CrdtpConnectionException.cs" />
     <Compile Include="Exceptions\CrdtpErrorResponseException.cs" />

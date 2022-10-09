@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Xilium.Crdtp.Client
 {
@@ -20,5 +22,12 @@ namespace Xilium.Crdtp.Client
         }
 
         public CrdtpErrorResponse ErrorResponse => _errorResponse;
+
+        [DoesNotReturn]
+        // [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static void Throw(CrdtpErrorResponse errorResponse)
+        {
+            throw new CrdtpErrorResponseException(errorResponse);
+        }
     }
 }

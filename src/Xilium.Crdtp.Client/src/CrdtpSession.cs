@@ -191,6 +191,27 @@ namespace Xilium.Crdtp.Client
         // TODO: Generic sending method for sending command(s).
         // This method is not necessary might be accessible, if client is built without Json/Dynamic support.
         // [DynamicallyAccessedMembers(MembersAccessedOnWrite)] => public fields & public properties
+
+        // TODO: Instead of CrdtpResponse<Unit> return CrdtpResponse.
+        public async Task<CrdtpResponse> SendCommandAsync<TRequest>(string method,
+            TRequest parameters,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await SendCommandAsync<TRequest, Unit>(
+                JsonEncodedText.Encode(method), parameters, cancellationToken)
+                .ConfigureAwait(false);
+            return new CrdtpResponse(response);
+        }
+
+        public async Task<CrdtpResponse> SendCommandAsync<TRequest>(JsonEncodedText method,
+            TRequest parameters,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await SendCommandAsync<TRequest, Unit>(method, parameters, cancellationToken)
+                .ConfigureAwait(false);
+            return new CrdtpResponse(response);
+        }
+
         public Task<CrdtpResponse<TResponse>> SendCommandAsync<TRequest, TResponse>(
             string method,
             TRequest parameters,
@@ -209,10 +230,11 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfNotAttached();
             // Debugger.NotifyOfCrossThreadDependency();
             // TODO: Enable checks above when tests be more robust.
 
+            // TODO: ThrowIfNotAttached() is not used here, because we capture
+            // client reference.
             var client = _client;
             if (client == null) ThrowNotAttached();
 

@@ -1,11 +1,20 @@
 ﻿namespace Xilium.Crdtp.Core
 {
     // TODO(dmitry.azaraev): Review Unit-type implementation.
+    // TODO(dmitry.azaraev): Move to xi.lang
 
     /// <summary>
-    /// Unit-like type with single possible value of null.
-    /// This type used to represent empty parameters or empty response.
+    /// The unit type (see https://en.wikipedia.org/wiki/Unit_type), which has
+    /// only one value. This value is special and always uses the representation
+    /// <see langword="null" />.
     /// </summary>
+    /// <remarks>
+    /// This type have private constructor, so no instances should exist.
+    /// Recommended way to "construct instance" of this type is use C# default
+    /// operator <c>default(Unit)</c>.
+    ///
+    /// <para>This type used to represent empty command parameters or empty response.</para>
+    /// </remarks>
     public sealed class Unit // : IEquatable<Unit>
     {
         private Unit() { }

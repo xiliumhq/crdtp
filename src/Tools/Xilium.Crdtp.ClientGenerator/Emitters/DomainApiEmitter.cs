@@ -62,67 +62,13 @@ namespace Xilium.Crdtp.Emitters
 
             foreach (var command in commands.OrderBy(x => x.Name))
             {
-                var parametersType = command.ParametersType;
-                var returnType = command.ReturnType;
+                // TODO: Add option to generate invoke variations as requested
 
-                var parametersTypeName = command.ParametersType.GetFullyQualifiedName();
-                var returnTypeName = command.ReturnType.GetFullyQualifiedName();
-                var protocolMethod = command.ProtocolMethod;
+                var throwingMethod = MakeCommandMethod(command, getCrdtpSessionExpr, throwingMethod: true);
+                domainApiTypeMembers.Add(throwingMethod);
 
-                var commandAttributes = Context.CSharp.CreateAttributeList(command, UsingNamespaces);
-
-                // TODO: emit Try/non-Try methods
-
-                var methodParameters = new List<CS.Parameter>();
-                string parametersExpr;
-                {
-                    if (parametersType is UnitTypeInfo)
-                    {
-                        parametersExpr = $"default({parametersTypeName})!";
-                    }
-                    else
-                    {
-                        var parametersParameter = new CS.Parameter("parameters", parametersTypeName);
-                        methodParameters.Add(parametersParameter);
-                        parametersExpr = parametersParameter.Name;
-                    }
-                    methodParameters.Add(new CS.Parameter("cancellationToken", "System.Threading.CancellationToken", defaultValue: "default"));
-                }
-
-                CS.Parameter methodReturnParameter;
-                CS.SyntaxObject[] methodBody;
-                if (returnType is UnitTypeInfo)
-                {
-                    methodReturnParameter = new CS.Parameter(null!, "System.Threading.Tasks.Task");
-                    methodBody = new CS.SyntaxObject[]
-                    {
-                        // TODO: emit JsonEncodedText command name... (
-                        new CS.Raw($"return {getCrdtpSessionExpr}"),
-                        new CS.Raw($"    .ExecuteCommandAsync<{parametersTypeName}>("),
-                        new CS.Raw($"        {Context.CSharp.CreateString(protocolMethod)}, {parametersExpr}, cancellationToken);"),
-                    };
-                }
-                else
-                {
-                    methodReturnParameter = new CS.Parameter(null!, $"System.Threading.Tasks.Task<{returnTypeName}>");
-                    methodBody = new CS.SyntaxObject[]
-                    {
-                        // TODO: emit JsonEncodedText command name... (
-                        new CS.Raw($"return {getCrdtpSessionExpr}"),
-                        new CS.Raw($"    .ExecuteCommandAsync<{parametersTypeName}, {returnTypeName}>("),
-                        new CS.Raw($"        {Context.CSharp.CreateString(protocolMethod)}, {parametersExpr}, cancellationToken);"),
-                    };
-                }
-
-                var method = new CS.MethodDeclaration(
-                    name: command.Name + "Async", // TODO: Use NamingPolicy
-                    parameters: methodParameters,
-                    returnParameter: methodReturnParameter,
-                    modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.ReadOnly,
-                    attributes: commandAttributes,
-                    xmlDocumentation: Context.CSharp.CreateDocumentation(command),
-                    members: methodBody);
-                domainApiTypeMembers.Add(method);
+                var nonThrowingMethod = MakeCommandMethod(command, getCrdtpSessionExpr, throwingMethod: false);
+                domainApiTypeMembers.Add(nonThrowingMethod);
             }
 
             foreach (var eventInfo in events.OrderBy(x => x.Name))
@@ -163,6 +109,133 @@ namespace Xilium.Crdtp.Emitters
             declarations.Add(domainApiTypeDecl);
 
             return declarations;
+        }
+
+        private CS.MethodDeclaration MakeCommandMethod(CommandInfo command,
+            string getCrdtpSessionExpr,
+            bool throwingMethod)
+        {
+            DebugCheck.That(command != null);
+
+            // TODO: Make it configurable
+            const bool invokeSendReturnsUnit = false;
+
+            // TODO: Add option to always generate SendCommandAsync, and get
+            // result in generated method (for throwing)
+            const bool useSendCommandForThrowingMethod = false;
+            // TODO: Add option to generate await inside command invokers to
+            // make clear stacktrace.
+            const bool invokeUsesAwaits = false;
+
+            var parametersType = command.ParametersType;
+            var returnType = command.ReturnType;
+
+            var parametersTypeName = command.ParametersType.GetFullyQualifiedName();
+            string returnTypeName = command.ReturnType.GetFullyQualifiedName();
+
+            var protocolMethod = command.ProtocolMethod;
+
+            var commandAttributes = Context.CSharp.CreateAttributeList(command, UsingNamespaces);
+
+            var methodParameters = new List<CS.Parameter>();
+            string parametersExpr;
+            {
+                if (parametersType is UnitTypeInfo)
+                {
+                    parametersExpr = $"default({parametersTypeName})!";
+                }
+                else
+                {
+                    var parametersParameter = new CS.Parameter("parameters", parametersTypeName);
+                    methodParameters.Add(parametersParameter);
+                    parametersExpr = parametersParameter.Name;
+                }
+                methodParameters.Add(new CS.Parameter("cancellationToken", "System.Threading.CancellationToken", defaultValue: "default"));
+            }
+
+            var invokeCommandMethodName = throwingMethod ? "ExecuteCommandAsync" : "SendCommandAsync";
+
+            const string CrdtpResponseTypeName = "Xilium.Crdtp.Client.CrdtpResponse";
+
+            CS.Parameter methodReturnParameter;
+            CS.SyntaxObject[] methodBody;
+            if (returnType is UnitTypeInfo)
+            {
+                bool invokeCommandShouldIncludeReturnTypeName;
+
+                string methodReturnParameterTypeName;
+                if (throwingMethod)
+                {
+                    methodReturnParameterTypeName = $"System.Threading.Tasks.Task";
+                    invokeCommandShouldIncludeReturnTypeName = false;
+                }
+                else
+                {
+                    if (invokeSendReturnsUnit)
+                    {
+                        methodReturnParameterTypeName =
+                            $"System.Threading.Tasks.Task<{CrdtpResponseTypeName}<{returnTypeName}>>";
+                        invokeCommandShouldIncludeReturnTypeName = true;
+                    }
+                    else
+                    {
+                        methodReturnParameterTypeName =
+                            $"System.Threading.Tasks.Task<{CrdtpResponseTypeName}>";
+                        invokeCommandShouldIncludeReturnTypeName = false;
+                    }
+                }
+
+                string invokeAdditionalGenericParameters = "";
+                if (invokeCommandShouldIncludeReturnTypeName)
+                {
+                    invokeAdditionalGenericParameters += $", {returnTypeName}";
+                }
+
+                methodReturnParameter = new CS.Parameter(null!, methodReturnParameterTypeName);
+                methodBody = new CS.SyntaxObject[]
+                {
+                            // TODO: emit JsonEncodedText command name... (
+                            new CS.Raw($"return {getCrdtpSessionExpr}"),
+                            new CS.Raw($"    .{invokeCommandMethodName}<{parametersTypeName}{invokeAdditionalGenericParameters}>("),
+                            new CS.Raw($"        {Context.CSharp.CreateString(protocolMethod)}, {parametersExpr}, cancellationToken);"),
+                };
+            }
+            else
+            {
+                string methodReturnParameterTypeName;
+                if (throwingMethod)
+                {
+                    methodReturnParameterTypeName = $"System.Threading.Tasks.Task<{returnTypeName}>";
+                }
+                else
+                {
+                    methodReturnParameterTypeName =
+                        $"System.Threading.Tasks.Task<{CrdtpResponseTypeName}<{returnTypeName}>>";
+                }
+
+                methodReturnParameter = new CS.Parameter(null!, methodReturnParameterTypeName);
+                methodBody = new CS.SyntaxObject[]
+                {
+                        // TODO: emit JsonEncodedText command name... (
+                        new CS.Raw($"return {getCrdtpSessionExpr}"),
+                        new CS.Raw($"    .{invokeCommandMethodName}<{parametersTypeName}, {returnTypeName}>("),
+                        new CS.Raw($"        {Context.CSharp.CreateString(protocolMethod)}, {parametersExpr}, cancellationToken);"),
+                };
+            }
+
+            // TODO: Use NamingPolicy
+            var methodNamePrefix = throwingMethod ? "" : "Try";
+            var methodName = methodNamePrefix + command.Name + "Async";
+
+            var method = new CS.MethodDeclaration(
+                name: methodName,
+                parameters: methodParameters,
+                returnParameter: methodReturnParameter,
+                modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.ReadOnly,
+                attributes: commandAttributes,
+                xmlDocumentation: Context.CSharp.CreateDocumentation(command),
+                members: methodBody);
+            return method;
         }
     }
 }

@@ -21,5 +21,8 @@ namespace Xilium.Crdtp.Client
 
         [JsonPropertyName("data")]
         public string? Data { get; set; }
+
+        public CrdtpErrorResponseException ToException()
+            => new CrdtpErrorResponseException(this);
     }
 }
