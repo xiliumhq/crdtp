@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Xilium.Crdtp.Cli": {
-      "commandName": "Project",
-      "commandLineArgs": "gen --output-path=\".\\out\" W:\\xiliumhq-chromedevtools\\xi-crdtp-tools-internal\\src.pdl\\browser_protocol.pdl W:\\xiliumhq-chromedevtools\\xi-crdtp-tools-internal\\src.pdl\\js_protocol.pdl"
-    }
-  }
-}

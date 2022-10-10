@@ -4,7 +4,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="JsonElementExtensions.cs" />
     <Compile Include="PdlFileReader.cs" />
+    <Compile Include="JsonReader.cs" />
     <Compile Include="PdlReader.cs" />
     <Compile Include="PdlReader.Keys.cs" />
     <Compile Include="Syntax\CommandSyntax.cs" />

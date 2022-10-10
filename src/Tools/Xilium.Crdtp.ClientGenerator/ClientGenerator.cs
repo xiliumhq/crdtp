@@ -216,8 +216,22 @@ namespace Xilium.Crdtp
             foreach (var path in _options.InputFiles)
             {
                 using var stream = IO.File.OpenRead(path);
-                using var reader = new IO.StreamReader(stream);
-                var syntaxTree = PdlReader.Parse(reader);
+
+                Sx.ProtocolSyntax syntaxTree;
+                if (path.EndsWith(".pdl", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var reader = new IO.StreamReader(stream);
+                    syntaxTree = PdlReader.Parse(reader);
+                }
+                else if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    var jsonReader = new JsonReader(path);
+                    syntaxTree = jsonReader.ParseStream(stream);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Generator only accepts `.pdl` or `.json` file extensions.");
+                }
                 syntaxTrees.Add(syntaxTree);
             }
 

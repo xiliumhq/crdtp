@@ -55,9 +55,9 @@ namespace Xilium.Crdtp.Cli
 
         private static Command CreateGenerateCommand()
         {
-            var command = new Command("generate", "Generate crdtp protocol bindings from PDL files")
+            var command = new Command("generate", "Generate crdtp protocol bindings from PDL/JSON files")
             {
-                new Argument<string>("input", "Specifies source (.pdl) files. If directory is specified, then tool automatically assumes what it is chromium directory, where it looks for `browser_protocol.pdl` and `js_protocol.pdl` files.")
+                new Argument<string>("input", "Specifies source (.pdl or .json) files.")
                 {
                     Arity = ArgumentArity.OneOrMore,
                 },
