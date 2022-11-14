@@ -8,6 +8,8 @@
 
     <IsPackable>false</IsPackable>
     <PackageOutputPath>$(MSBuildThisFileDirectory)\artifacts\</PackageOutputPath>
+
+    <UseMinVer Condition=" '$(UseMinVer)' == '' ">false</UseMinVer>
   </PropertyGroup>
 
   <!-- Packaging Defaults -->
@@ -30,7 +32,7 @@
     <IncludeSource>false</IncludeSource>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(UseMinVer)' == 'true' ">
     <PackageReference Include="MinVer" Version="2.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
