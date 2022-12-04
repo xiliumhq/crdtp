@@ -18,6 +18,11 @@
     <Description>Client library which let you to communicate with agent hosts based on Chrome DevTools Protocol, specifically Chromium, Chrome and other Blink-based browsers.</Description>
   </PropertyGroup>
 
+  <Import Project="..\..\..\Branding.props" />
+  <PropertyGroup>
+    <AssemblyName>$(AssemblyNamePrefix).Crdtp.Client</AssemblyName>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\..\Common\Xilium.Core\Check.Argument.cs" Link="Xilium.Core\Check.Argument.cs" />
     <Compile Include="..\..\Common\Xilium.Core\Check.cs" Link="Xilium.Core\Check.cs" />

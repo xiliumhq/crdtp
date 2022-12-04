@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <AssemblyNamePrefix>Xilium</AssemblyNamePrefix>
+  </PropertyGroup>
+</Project>
