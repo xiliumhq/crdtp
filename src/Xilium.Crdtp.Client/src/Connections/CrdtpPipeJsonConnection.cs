@@ -21,7 +21,9 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
 
     protected override ValueTask SendAsyncCore(ReadOnlyMemory<byte> message)
     {
-#pragma warning disable VSTHRD103 // Call async methods when in an async method
+        // FIXME: This is quick fix for issue #27.
+        return SendFallbackAsync(message);
+
         if (_sendAsyncLock.Wait(0, default))
         {
             return SendLockAcquiredAsync(message);
@@ -30,7 +32,6 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
         {
             return SendFallbackAsync(message);
         }
-#pragma warning restore VSTHRD103 // Call async methods when in an async method
     }
 
     private ValueTask SendLockAcquiredAsync(ReadOnlyMemory<byte> message)
@@ -42,7 +43,8 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
         var releaseSemaphore = true;
         try
         {
-            // TODO: This most likely incompatible with valuetask pooling.
+            // TODO: This most likely incompatible with valuetask pooling,
+            // and causes memory leak. See issue #27.
             _ = WriteStream.WriteAsync(message, cancellationToken: default);
             sendTask = WriteStream.WriteAsync(s_endOfMessage, cancellationToken: default);
             if (sendTask.IsCompleted)
@@ -108,6 +110,7 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
         {
             var handler = _connection.Delegate;
 
+            // TODO: Add metric to maximum buffer size reached.
             var ioBuffer = new CrdtpArrayBufferWriter<byte>(4096);
 
             var wOffset = 0;
