@@ -356,6 +356,10 @@ namespace Xilium.Crdtp.Client
                     // TODO(dmitry.azaraev): (Undecided) For convenience there might be better always generate params,
                     // and it is should be easy to do without JsonSerializer.Serialize call. On another side, there
                     // is no reason to write property in cases when it not required.
+                    // TODO: whenever null is passed, don't serialize it? check chromium code, it
+                    // generally also should accept null, so probably there is no sense to treat
+                    // null case differently.
+                    // if (!EqualityComparer<TRequest>.Default.Equals(parameters, default(TRequest)))
                     if (typeof(TRequest) != typeof(Unit))
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);

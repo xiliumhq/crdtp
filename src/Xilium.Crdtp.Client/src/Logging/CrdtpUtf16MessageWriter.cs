@@ -18,6 +18,7 @@ public readonly struct CrdtpUtf16MessageWriter
     // TODO: Add metrics, and choose proper size.
     private const int DefaultStackAllockSize = 256;
 
+    // TODO: Make generic AbbreviateString/Buffer helper, with modes: begin, middle, end.
     public static string Format(ReadOnlySpan<byte> message,
         bool isReceive,
         in CrdtpMessageWriterOptions options)
