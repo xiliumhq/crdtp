@@ -97,7 +97,7 @@ namespace Xilium.Crdtp.Client.Serialization
 
             // TODO(dmitry.azaraev): Verify what created Dispatchable is correct, e.g. there is response or notification, or throw protocol violation.
 
-            return new Dispatchable(sessionId, callId, method, dataType, data);
+            return new Dispatchable(sessionId ?? "", callId, method, dataType, data);
         }
     }
 }

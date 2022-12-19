@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 using Xilium.Crdtp.Client.Serialization;
 using Xunit;
 
@@ -14,20 +15,18 @@ namespace Xilium.Crdtp.Client.Tests
     public class CrdtpSessionTests
     {
         private CrdtpSession CreateSession(string? sessionId = default)
-            => new CrdtpSession(sessionId: sessionId, handler: null);
+            => new CrdtpSession(sessionId: sessionId ?? "", handler: null);
+
+        [Fact]
+        public void SessionId_MustBeNotNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new CrdtpSession(null!));
+        }
 
         [Fact]
         public void SessionId_Detached_Ok()
         {
             var session = CreateSession();
-            var actual = session.SessionId;
-            Assert.Equal(default, actual);
-        }
-
-        [Fact]
-        public void SessionId_EmptyStringNormalizedToNull()
-        {
-            var session = CreateSession(sessionId: "");
             var actual = session.SessionId;
             Assert.Equal(default, actual);
         }

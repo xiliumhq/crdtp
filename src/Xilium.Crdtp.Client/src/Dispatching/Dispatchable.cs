@@ -10,13 +10,13 @@ namespace Xilium.Crdtp.Client.Dispatching
     // So there is just enough bool IsProtocolError.
     internal readonly ref struct Dispatchable
     {
-        private readonly string? _sessionId;
+        private readonly string _sessionId;
         private readonly int? _callId;
         private readonly string? _method;
         private readonly PayloadType _dataType;
         private readonly ReadOnlySpan<byte> _data;
 
-        public Dispatchable(string? sessionId, int? callId, string? method,
+        public Dispatchable(string sessionId, int? callId, string? method,
             PayloadType dataType,
             ReadOnlySpan<byte> data)
         {
@@ -27,7 +27,7 @@ namespace Xilium.Crdtp.Client.Dispatching
             _data = data;
         }
 
-        public string? SessionId => _sessionId;
+        public string SessionId => _sessionId;
         public int? CallId => _callId;
         public string? Method => _method;
         public PayloadType DataType => _dataType;

@@ -23,7 +23,7 @@ namespace Xilium.Crdtp.Client
         : ISessionApi
 #endif
     {
-        private readonly string? _sessionId;
+        private readonly string _sessionId;
         private readonly CrdtpSessionHandler _handler;
         private int _callIdGen;
 
@@ -37,25 +37,18 @@ namespace Xilium.Crdtp.Client
 
         private readonly JsonEncodedText _jsonEncodedSessionId;
 
-        public CrdtpSession(string? sessionId, CrdtpSessionHandler? handler = null)
+        public CrdtpSession(string sessionId, CrdtpSessionHandler? handler = null)
         {
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                _sessionId = null;
-                _jsonEncodedSessionId = default;
-            }
-            else
-            {
-                _sessionId = sessionId;
-                _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
-            }
+            Check.Argument.NotNull(sessionId, nameof(sessionId));
+
+            _sessionId = sessionId;
+            _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
             _handler = handler ?? DefaultSessionHandler.Instance;
             _requests = new Dictionary<int, CrdtpRequest>();
             _eventDispatchers = new Dictionary<string, CrdtpDispatcher>();
         }
 
-        // TODO: Make SessionId non-nullable, for root session holds empty string.
-        public string? SessionId => _sessionId;
+        public string SessionId => _sessionId;
 
         // TODO: No need special IsAttached flag, it is effectively same as `_client != null`;
         public bool IsAttached => _isAttached;
@@ -369,7 +362,7 @@ namespace Xilium.Crdtp.Client
                         JsonSerializer.Serialize(encoder, parameters, GetJsonSerializerOptions());
                     }
 
-                    if (!string.IsNullOrEmpty(_sessionId))
+                    if (_sessionId.Length != 0)
                     {
                         encoder.WriteString(StjEncodedProperties.SessionId, _jsonEncodedSessionId);
                     }

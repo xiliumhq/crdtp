@@ -214,7 +214,7 @@ namespace Xilium.Crdtp.Client
 
             var sessionId = session.SessionId;
 
-            if (string.IsNullOrEmpty(sessionId))
+            if (sessionId.Length == 0)
             {
                 // TODO: We already under lock
                 if (Interlocked.CompareExchange(ref _defaultSession, session, null) == null)
@@ -243,7 +243,7 @@ namespace Xilium.Crdtp.Client
 
             var sessionId = session.SessionId;
 
-            if (string.IsNullOrEmpty(sessionId))
+            if (sessionId.Length == 0)
             {
                 return Interlocked.CompareExchange(ref _defaultSession, null, session) == session;
             }
