@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net461</TargetFrameworks>
-
     <AssemblyName>Xilium.Core</AssemblyName>
     <RootNamespace>Xilium</RootNamespace>
 
     <DefineConstants>$(DefineConstants);XI_CORE_PUBLIC</DefineConstants>
   </PropertyGroup>
+  <Import Project="..\..\..\Tools.props" />
 
   <ItemGroup>
     <Compile Include="Check.Argument.cs" />

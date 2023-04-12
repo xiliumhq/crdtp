@@ -3,7 +3,5 @@
   <PropertyGroup>
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0</TargetFrameworks>
-  </PropertyGroup>
+  <Import Project="..\..\Tools.props" />
 </Project>
