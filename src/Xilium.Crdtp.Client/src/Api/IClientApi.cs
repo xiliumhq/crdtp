@@ -23,6 +23,9 @@ namespace Xilium.Crdtp.Client
         // bool TryDetach(CrdtpSession session);
 
         bool TryGetSession(string? sessionId, [NotNullWhen(true)] out CrdtpSession? session);
+
+        // Infrastructure methods.
+        int GetNextCallId();
     }
 }
 #endif

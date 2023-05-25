@@ -25,7 +25,6 @@ namespace Xilium.Crdtp.Client
     {
         private readonly string _sessionId;
         private readonly CrdtpSessionHandler _handler;
-        private int _callIdGen;
 
         internal readonly object StateAndRequestMapLock = new object();
         private CrdtpClient? _client;
@@ -123,12 +122,6 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        // TODO(dmitry.azaraev): Move GetNextCallId to SessionHandler, this will
-        // be useful to creating transitive id generation for client (instead of
-        // id generation per-session). Transitive IDs are bit more easy to
-        // use in log analysis.
-        public int GetNextCallId() => Interlocked.Increment(ref _callIdGen);
-
         // TODO(dmitry.azaraev): (Low) AggresiveInline
         internal JsonSerializerOptions GetJsonSerializerOptions()
             => CrdtpClient.JsonSerializerOptionsBuilder.GetOptions();
@@ -185,7 +178,6 @@ namespace Xilium.Crdtp.Client
         // This method is not necessary might be accessible, if client is built without Json/Dynamic support.
         // [DynamicallyAccessedMembers(MembersAccessedOnWrite)] => public fields & public properties
 
-        // TODO: Instead of CrdtpResponse<Unit> return CrdtpResponse.
         public async Task<CrdtpResponse> SendCommandAsync<TRequest>(string method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -242,7 +234,7 @@ namespace Xilium.Crdtp.Client
                 }
             }
 
-            var callId = GetNextCallId();
+            var callId = client.GetNextCallId();
             var bufferWriter = SerializeRequest(callId, method, parameters);
             var shouldReturnBufferWriter = true;
             try

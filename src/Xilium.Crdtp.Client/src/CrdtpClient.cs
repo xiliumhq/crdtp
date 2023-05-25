@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
@@ -30,6 +31,7 @@ namespace Xilium.Crdtp.Client
         // TODO: Remove _defaultSession? (And just put it in _sessions dictionary)
         private CrdtpSession? _defaultSession;
         private readonly Dictionary<string, CrdtpSession> _sessions;
+        private int _callIdGen;
 
         public CrdtpClient(Func<CrdtpConnectionDelegate, CrdtpConnection> connectionFactory,
             CrdtpClientHandler? handler = null,
@@ -315,5 +317,7 @@ namespace Xilium.Crdtp.Client
                 }
             }
         }
+
+        public int GetNextCallId() => Interlocked.Increment(ref _callIdGen);
     }
 }

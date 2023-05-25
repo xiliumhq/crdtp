@@ -52,14 +52,6 @@ namespace Xilium.Crdtp.Client.Tests
         }
 
         [Fact]
-        public void GetNextCallId_Detached_Ok()
-        {
-            var session = CreateSession();
-            var actual = session.GetNextCallId();
-            Assert.Equal(1, actual);
-        }
-
-        [Fact]
         public void UseSerializerOptions_Detached_Ok()
         {
             var session = CreateSession();

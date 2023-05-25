@@ -64,7 +64,6 @@ internal interface ISessionApi
     #endregion
 
     // Infrastructure methods.
-    int GetNextCallId();
     void UseSerializerOptions(StjSerializerOptions options);
 }
 #endif

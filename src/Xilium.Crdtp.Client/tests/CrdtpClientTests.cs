@@ -46,5 +46,14 @@ namespace Xilium.Crdtp.Client.Tests
             var session = new CrdtpSession("", handler: null);
             client.Attach(session);
         }
+
+        [Fact]
+        public void GetNextCallId()
+        {
+            // Method is works regardless to client state.
+            var client = new CrdtpClient((handler) => new TestConnection(handler));
+            var actual = client.GetNextCallId();
+            Assert.Equal(1, actual);
+        }
     }
 }

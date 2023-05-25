@@ -6,8 +6,16 @@
   <Import Project="..\..\..\Client.props" />
 
   <ItemGroup>
+    <Compile Include="..\..\Common\Xilium.Core\Check.Argument.cs" Link="Xilium.Core\Check.Argument.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\Check.cs" Link="Xilium.Core\Check.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\DebugCheck.cs" Link="Xilium.Core\DebugCheck.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\Error.cs" Link="Xilium.Core\Error.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\NullableAttributes.cs" Link="Xilium.Core\NullableAttributes.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\ModuleInitializerAttribute.cs" Link="Xilium.Core\ModuleInitializerAttribute.cs" />
+    <Compile Include="..\..\Common\Xilium.Core\StringExtensions.cs" Link="Xilium.Core\StringExtensions.cs" />
     <Compile Include="ConnectionTests.cs" />
     <Compile Include="CrdtpClientDisposeDeadlockTest.cs" />
+    <Compile Include="SessionNotFoundTest.cs" />
     <Compile Include="CrdtpResponseTest.cs" />
     <Compile Include="CrdtpSessionTests.cs" />
     <Compile Include="CrdtpClientTests.cs" />
@@ -15,6 +23,8 @@
     <Compile Include="CrdtpUtf16MessageWriterTest.cs" />
     <Compile Include="Helpers\FakeConnection.cs" />
     <Compile Include="Helpers\FakeConnectionDelegate.cs" />
+    <Compile Include="Testing\Dispatchable.cs" />
+    <Compile Include="Testing\DispatchableParser.cs" />
     <Compile Include="TestSessionApi.cs" />
     <Compile Include="__RefactorMe_CrdtpSessionTests.cs" />
   </ItemGroup>
