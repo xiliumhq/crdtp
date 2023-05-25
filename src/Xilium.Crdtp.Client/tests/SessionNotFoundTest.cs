@@ -130,7 +130,7 @@ public class SessionNotFoundTest
     {
         using var client = new CrdtpClient((handler) => new TestConnection(handler));
 
-        var defaultSession = new CrdtpSession("");
+        var defaultSession = new CrdtpSession(client, "");
         client.Attach(defaultSession);
 
         await client.OpenAsync();
@@ -140,7 +140,7 @@ public class SessionNotFoundTest
             cancellationToken: tcs.Token);
         Assert.True(response.IsSuccess);
 
-        var session2 = new CrdtpSession("some-session-id");
+        var session2 = new CrdtpSession(client, "some-session-id");
         client.Attach(session2);
         var response2 = await session2.SendCommandAsync("Connectivity2.sessionNotFound",
             new EmptyRequest(), cancellationToken: tcs.Token);

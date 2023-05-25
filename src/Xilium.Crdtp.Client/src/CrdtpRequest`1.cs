@@ -36,7 +36,7 @@ namespace Xilium.Crdtp.Client
             _tcs = new TaskCompletionSource<CrdtpResponse<TResponse>>(session, TaskCreationOptions.RunContinuationsAsynchronously);
         }
 
-        private CrdtpSession Session => (CrdtpSession)_tcs.Task.AsyncState!;
+        public override CrdtpSession Session => (CrdtpSession)_tcs.Task.AsyncState!;
 
         private void ReleaseCancellationTokenRegistration()
         {
@@ -81,7 +81,7 @@ namespace Xilium.Crdtp.Client
             {
                 if (removeFromRequestMap)
                 {
-                    var unregistered = Session.UnregisterRequest(_callId, this);
+                    var unregistered = Session._client.UnregisterRequest(_callId, this);
                     DebugCheck.That(unregistered);
                 }
             }
@@ -92,7 +92,7 @@ namespace Xilium.Crdtp.Client
             ReleaseCancellationTokenRegistration();
             if (_tcs.TrySetException(exception))
             {
-                var unregistered = Session.UnregisterRequest(_callId, this);
+                var unregistered = Session._client.UnregisterRequest(_callId, this);
                 DebugCheck.That(unregistered);
             }
         }

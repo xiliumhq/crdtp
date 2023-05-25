@@ -36,6 +36,7 @@
     <Compile Include="Connections\CrdtpPipeJsonConnection.cs" />
     <Compile Include="Connections\CrdtpWebSocketConnection.cs" />
     <Compile Include="Core\Unit.cs" />
+    <Compile Include="CrdtpClient~Requests.cs" />
     <Compile Include="CrdtpClient+ConnectionDelegate.cs" />
     <Compile Include="CrdtpClient.cs" />
     <Compile Include="CrdtpClientHandler.cs" />

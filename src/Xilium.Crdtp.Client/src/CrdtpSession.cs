@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -23,44 +22,40 @@ namespace Xilium.Crdtp.Client
         : ISessionApi
 #endif
     {
+        internal readonly CrdtpClient _client;
         private readonly string _sessionId;
         private readonly CrdtpSessionHandler _handler;
 
+        // TODO: Rename to StateLock
         internal readonly object StateAndRequestMapLock = new object();
-        private CrdtpClient? _client;
         private bool _isAttached;
-        private Dictionary<int, CrdtpRequest> _requests;
 
-        internal readonly object EventDispatcherMapLock = new object();
+        internal object EventDispatcherMapLock => _eventDispatchers;
         private readonly Dictionary<string, CrdtpDispatcher> _eventDispatchers;
 
         private readonly JsonEncodedText _jsonEncodedSessionId;
 
-        public CrdtpSession(string sessionId, CrdtpSessionHandler? handler = null)
+        // This field accessed by CrdtpClient when request added/removed from
+        // request map, and this operations performed under RequestMapLock;
+        internal int _numberOfPendingRequests;
+
+        public CrdtpSession(CrdtpClient client, string sessionId, CrdtpSessionHandler? handler = null)
         {
+            Check.Argument.NotNull(client, nameof(client));
             Check.Argument.NotNull(sessionId, nameof(sessionId));
 
+            _client = client;
             _sessionId = sessionId;
             _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
             _handler = handler ?? DefaultSessionHandler.Instance;
-            _requests = new Dictionary<int, CrdtpRequest>();
             _eventDispatchers = new Dictionary<string, CrdtpDispatcher>();
         }
 
         public string SessionId => _sessionId;
 
-        // TODO: No need special IsAttached flag, it is effectively same as `_client != null`;
         public bool IsAttached => _isAttached;
 
-        // TODO: Remove GetClientOrDefault, and make GetClient() returning nullable reference.
-        public CrdtpClient GetClient()
-        {
-            var client = _client;
-            if (client == null) throw Error.InvalidOperation("Session is not attached.");
-            return client;
-        }
-
-        public CrdtpClient? GetClientOrDefault() => _client;
+        public CrdtpClient GetClient() => _client;
 
         #region Attach & Detach
 
@@ -74,7 +69,6 @@ namespace Xilium.Crdtp.Client
             if (!_isAttached)
             {
                 _isAttached = true;
-                _client = client;
                 _handler.OnAttach();
             }
         }
@@ -86,39 +80,14 @@ namespace Xilium.Crdtp.Client
             if (_isAttached)
             {
                 _isAttached = false;
-                _client = null;
+                // TODO: Cancel pending requests with reason
                 CancelPendingRequests(); // TODO: this can be called outside of the lock, or from Attach/Detach methods
                 _handler.OnDetach();
             }
         }
 
-        public void CancelPendingRequests() // TODO: Review use of CancelPendingRequests. When it is needed - use Internal version.
-        {
-            lock (StateAndRequestMapLock)
-            {
-                if (_requests.Count == 0) return;
-
-                var requests = _requests;
-
-                // TODO: This dictionary should not be accessed during cancellation.
-                // And we doesn't want take lock on registered cancellation token callback.
-                // This might requires to add additional internal state, which will block
-                // adding new requests, then we might swap dictionaries, and release lock.
-                // After this cancel pending requests (concurrently).
-                // And after all pending requests are cancelled - take lock and set correct state back (Open_Cancelling -> Open)
-                // This requres to make threaded test, might be done with fake connection.
-                _requests = null!;
-
-                foreach (var request in requests.Values)
-                {
-                    // TODO: Does it safe to execute cancel? (request can be cancelled concurrently via cancellation token => and it should attempt to unreginster request from this collection and take lock)?
-                    request.Cancel(removeFromRequestMap: false);
-                }
-
-                requests.Clear();
-                _requests = requests;
-            }
-        }
+        public void CancelPendingRequests()
+            => _client.CancelPendingRequests(this);
 
         #endregion
 
@@ -245,11 +214,7 @@ namespace Xilium.Crdtp.Client
                 lock (StateAndRequestMapLock)
                 {
                     ThrowIfNotAttached();
-
-                    if (!_requests.TryAdd(callId, request))
-                    {
-                        throw Error.InvalidOperation("Request with same id already registered.");
-                    }
+                    client.AddRequest(callId, request);
                 }
 
                 // TODO(dmitry.azaraev): ?
@@ -414,7 +379,7 @@ namespace Xilium.Crdtp.Client
             // there is have sense to have ability to have DomainDispatchers (this would replaces event
             // subscription, and it is more controllable/flexible). But there is also have sense delay with this
             // once crdtp serialization would be ready.
-            lock (_eventDispatchers)
+            lock (EventDispatcherMapLock)
             {
                 _eventDispatchers.Add(name, dispatcher);
             }
@@ -440,66 +405,24 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        private CrdtpRequest GetAndRemoveRequest(int callId)
-        {
-            lock (StateAndRequestMapLock)
-            {
-                // TODO: .NET 5, use single call, e.g. _requests.Remove(callId, out var request)
-                if (!_requests.TryGetValue(callId, out var request))
-                    throw Error.InvalidOperation("Request with given id not found."); // TODO: Emit event
+        public int GetNumberOfPendingRequests() => _numberOfPendingRequests;
 
-                _requests.Remove(callId);
-                return request;
-            }
-        }
-
-        internal bool UnregisterRequest(int callId, CrdtpRequest request)
-        {
-            lock (StateAndRequestMapLock)
-            {
-                // TODO: This would be nice to have TryRemove method, rather than this two calls.
-                // Even if we remove unrelated request, we may always add it back.
-                if (_requests.TryGetValue(callId, out var actualRequest))
-                {
-                    if (actualRequest == (object)request)
-                    {
-                        return _requests.Remove(callId);
-                    }
-                }
-                return false;
-            }
-        }
-
-        // TODO: Move this method to metrics. This method is obsoleted.
-        [Obsolete]
-        public int GetNumberOfPendingRequestsForTesting() => _requests.Count;
-
-        internal void Dispatch(Dispatchable dispatchable)
+        internal void DispatchEventInternal(Dispatchable dispatchable)
         {
             DebugCheck.That(dispatchable.SessionId == _sessionId);
+            DebugCheck.That(!dispatchable.CallId.HasValue);
+            DebugCheck.That(!string.IsNullOrEmpty(dispatchable.Method));
+
+            CrdtpDispatcher? dispatcher = null;
+            lock (_eventDispatchers)
+            {
+                _eventDispatchers.TryGetValue(dispatchable.Method!, out dispatcher);
+            }
+            if (dispatcher == null)
+                return;
 
             var context = new CrdtpDispatchContext(this);
-
-            if (dispatchable.CallId.HasValue)
-            {
-                // TODO(dmitry.azaraev): (High) CrdtpSession: Handle if request not found.
-                var request = GetAndRemoveRequest(dispatchable.CallId.Value);
-                request.Dispatch(context, dispatchable);
-            }
-            else if (!string.IsNullOrEmpty(dispatchable.Method))
-            {
-                CrdtpDispatcher? dispatcher = null;
-                lock (_eventDispatchers)
-                {
-                    _eventDispatchers.TryGetValue(dispatchable.Method, out dispatcher);
-                }
-                dispatcher?.Dispatch(context, dispatchable);
-            }
-            else
-            {
-                // TODO(dmitry.azaraev): CrdtpSession: Report protocol violation.
-                throw Error.InvalidOperation($"Protocol violation. Given message is not method result nor event notification.");
-            }
+            dispatcher?.Dispatch(context, dispatchable);
         }
 
         private void ThrowIfNotAttached() // TODO: Inline

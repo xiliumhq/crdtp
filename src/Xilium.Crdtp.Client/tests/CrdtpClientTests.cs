@@ -43,7 +43,7 @@ namespace Xilium.Crdtp.Client.Tests
             var client = new CrdtpClient((handler) => new TestConnection(handler));
             Assert.Equal(CrdtpClientState.None, client.State);
 
-            var session = new CrdtpSession("", handler: null);
+            var session = new CrdtpSession(client, "", handler: null);
             client.Attach(session);
         }
 

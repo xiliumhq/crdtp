@@ -31,6 +31,8 @@ namespace Xilium.Crdtp.Client
     // TODO(dmitry.azaraev): (Low) CrdtpRequest seems similar to CrdtpDispatcher, but no more identical.
     internal abstract class CrdtpRequest
     {
+        public abstract CrdtpSession Session { get; }
+
         public abstract void Cancel(bool removeFromRequestMap = true);
 
         public abstract void Dispatch(CrdtpDispatchContext context, Dispatchable dispatchable);

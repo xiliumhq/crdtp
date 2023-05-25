@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
@@ -22,7 +21,7 @@ namespace Xilium.Crdtp.Client
 
         private readonly CrdtpConnection _connection;
         private readonly CrdtpEncoding _encoding;
-        private readonly CrdtpLogger? _logger;
+        private readonly CrdtpLogger? _logger; // TODO: Implement null logger instead of nullability checks
         private readonly CrdtpClientHandler? _handler;
 
         private readonly object StateAndSessionMapLock = new object();
@@ -31,7 +30,10 @@ namespace Xilium.Crdtp.Client
         // TODO: Remove _defaultSession? (And just put it in _sessions dictionary)
         private CrdtpSession? _defaultSession;
         private readonly Dictionary<string, CrdtpSession> _sessions;
+
         private int _callIdGen;
+        private readonly object RequestMapLock = new object();
+        private Dictionary<int, CrdtpRequest> _requests;
 
         public CrdtpClient(Func<CrdtpConnectionDelegate, CrdtpConnection> connectionFactory,
             CrdtpClientHandler? handler = null,
@@ -46,6 +48,7 @@ namespace Xilium.Crdtp.Client
             // TODO: Add _connection.SetDelegate(), and obsolete this ctor.
             // So, connection factory will be not needed at all.
             _sessions = new Dictionary<string, CrdtpSession>();
+            _requests = new Dictionary<int, CrdtpRequest>();
         }
 
         public CrdtpClientState State => _state;
@@ -155,6 +158,9 @@ namespace Xilium.Crdtp.Client
 
         public void Attach(CrdtpSession session)
         {
+            if (session.GetClient() != this)
+                throw new ArgumentException("Given session did not belong to this client.", nameof(session));
+
             lock (StateAndSessionMapLock)
             {
                 // TODO: validate state, attach only on None and Open states.
@@ -162,9 +168,6 @@ namespace Xilium.Crdtp.Client
                 lock (session.StateAndRequestMapLock)
                 {
                     if (session.IsAttached) throw Error.InvalidOperation("Given session already attached.");
-
-                    var client = session.GetClientOrDefault();
-                    if (client != null) throw Error.InvalidOperation("Given session already attached.");
 
                     // TODO: This seems strange what EventDispatcherMapLock is
                     // never used, except this place.
@@ -317,7 +320,5 @@ namespace Xilium.Crdtp.Client
                 }
             }
         }
-
-        public int GetNextCallId() => Interlocked.Increment(ref _callIdGen);
     }
 }

@@ -45,13 +45,7 @@ namespace Xilium.Crdtp.Client
                     }
 
                     var dispatchable = DispatchableParser.Parse(message);
-
-                    if (!_client.TryGetSession(dispatchable.SessionId, out var session))
-                    {
-                        throw Error.InvalidOperation("Session not found.");
-                    }
-
-                    session.Dispatch(dispatchable);
+                    _client.Dispatch(dispatchable);
                 }
                 catch (Exception ex)
                 {

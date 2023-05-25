@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
 using Xunit;
@@ -10,13 +11,40 @@ namespace Xilium.Crdtp.Client.Tests
 {
     public class CrdtpSessionTests
     {
+        private sealed class FakeConnection : CrdtpConnection
+        {
+            public FakeConnection(CrdtpConnectionDelegate @delegate) : base(@delegate) { }
+
+            protected override void DisposeCore() { }
+
+            protected override Task OpenAsyncCore(CancellationToken cancellationToken)
+                => Task.CompletedTask;
+
+            protected override Task CloseAsyncCore(CancellationToken cancellationToken)
+                => Task.CompletedTask;
+
+            protected override CrdtpConnectionReader? CreateReader()
+                => null;
+
+            protected override ValueTask SendAsyncCore(ReadOnlyMemory<byte> message)
+                => ValueTask.CompletedTask;
+        }
+
         private CrdtpSession CreateSession(string? sessionId = default)
-            => new CrdtpSession(sessionId: sessionId ?? "", handler: null);
+        {
+            var client = new CrdtpClient((d) => new FakeConnection(d), handler: null);
+            var session = new CrdtpSession(client, sessionId: sessionId ?? "", handler: null);
+            return session;
+        }
 
         [Fact]
         public void SessionId_MustBeNotNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new CrdtpSession(null!));
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var client = new CrdtpClient((d) => new FakeConnection(d), handler: null);
+                var session = new CrdtpSession(client, null!);
+            });
         }
 
         [Fact]

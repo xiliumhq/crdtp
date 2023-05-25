@@ -2,6 +2,8 @@
 
 ## main
 
+  - CrdtpSession now always associated with client, and it must be specified in constructor
+  - Flat command response dispatching (see issue #13)
   - gen: Add non-throwing typed command invokers (see issue #8)
   - Add CrdtpPipeJsonConnection (.NET 5 or greater) (see issue #16)
   - Add simple `CrdtpUtf16MessageWriter` to assist logging
