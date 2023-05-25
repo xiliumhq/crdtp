@@ -14,7 +14,7 @@
             Members = Array.Empty<SyntaxObject>();
         }
 
-        public AccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public AccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject>? members = null)
         {
             TypeModifiers = typeModifiers;
             ArrowExpression = null;
@@ -22,7 +22,7 @@
         }
 
         public TypeModifiers TypeModifiers { get; private set; }
-        public ArrowExpressionClause ArrowExpression { get; private set; }
+        public ArrowExpressionClause? ArrowExpression { get; private set; }
         public IEnumerable<SyntaxObject> Members { get; private set; }
         public abstract string Keyword();
     }
@@ -35,7 +35,8 @@
         public GetAccessorDeclaration(ArrowExpressionClause arrowExpression)
             : base(arrowExpression) { }
 
-        public GetAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public GetAccessorDeclaration(TypeModifiers typeModifiers,
+            IEnumerable<SyntaxObject>? members = null)
             : base(typeModifiers, members) { }
 
         public override string Keyword() => "get";
@@ -49,7 +50,8 @@
         public SetAccessorDeclaration(ArrowExpressionClause arrowExpression)
             : base(arrowExpression) { }
 
-        public SetAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public SetAccessorDeclaration(TypeModifiers typeModifiers,
+            IEnumerable<SyntaxObject>? members = null)
             : base(typeModifiers, members) { }
 
         public override string Keyword() => "set";
@@ -63,7 +65,7 @@
         public InitAccessorDeclaration(ArrowExpressionClause arrowExpression)
             : base(arrowExpression) { }
 
-        public InitAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public InitAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject>? members = null)
             : base(typeModifiers, members) { }
 
         public override string Keyword() => "init";
@@ -77,7 +79,8 @@
         public AddAccessorDeclaration(ArrowExpressionClause arrowExpression)
             : base(arrowExpression) { }
 
-        public AddAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public AddAccessorDeclaration(TypeModifiers typeModifiers,
+            IEnumerable<SyntaxObject>? members = null)
             : base(typeModifiers, members) { }
 
         public override string Keyword() => "add";
@@ -91,7 +94,8 @@
         public RemoveAccessorDeclaration(ArrowExpressionClause arrowExpression)
             : base(arrowExpression) { }
 
-        public RemoveAccessorDeclaration(TypeModifiers typeModifiers, IEnumerable<SyntaxObject> members = null)
+        public RemoveAccessorDeclaration(TypeModifiers typeModifiers,
+            IEnumerable<SyntaxObject>? members = null)
             : base(typeModifiers, members) { }
 
         public override string Keyword() => "remove";

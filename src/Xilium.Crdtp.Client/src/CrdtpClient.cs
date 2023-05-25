@@ -151,20 +151,6 @@ namespace Xilium.Crdtp.Client
 
         public CrdtpEncoding Encoding => _encoding;
 
-        // TODO: Rename to AttachSession?
-        [Obsolete("Avoid this call.")]
-        public CrdtpSession CreateSession(string? sessionId)
-        {
-            var session = new CrdtpSession(sessionId);
-            Attach(session);
-            return session;
-        }
-
-        // TODO: Rename to AttachSession?
-        [Obsolete("Avoid this call.")]
-        public TProxy CreateSession<TProxy>(string? sessionId, Func<CrdtpSession, TProxy> proxyFactory)
-            => proxyFactory(CreateSession(sessionId));
-
         public void Attach(CrdtpSession session)
         {
             lock (StateAndSessionMapLock)

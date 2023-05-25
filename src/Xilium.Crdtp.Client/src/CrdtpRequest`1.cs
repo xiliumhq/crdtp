@@ -30,11 +30,10 @@ namespace Xilium.Crdtp.Client
         private bool _cancellationHasBeenRegistered;
 #endif
 
-        public CrdtpRequest(CrdtpSession session, int callId) // , CancellationToken cancellationToken)
+        public CrdtpRequest(CrdtpSession session, int callId)
         {
             _callId = callId;
             _tcs = new TaskCompletionSource<CrdtpResponse<TResponse>>(session, TaskCreationOptions.RunContinuationsAsynchronously);
-            // _cancellationToken = cancellationToken;
         }
 
         private CrdtpSession Session => (CrdtpSession)_tcs.Task.AsyncState!;
@@ -56,10 +55,6 @@ namespace Xilium.Crdtp.Client
             {
                 return;
             }
-
-            //if (cancellationToken.CanBeCanceled)
-            //{
-            //}
 
             _cancellationTokenRegistration = cancellationToken
 #if HAS_CANCELLATIONTOKEN_UNSAFEREGISTER

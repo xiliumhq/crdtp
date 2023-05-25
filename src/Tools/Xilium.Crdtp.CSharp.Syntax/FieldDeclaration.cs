@@ -10,10 +10,9 @@
                 string name,
                 CSharpModifiers modifiers,
                 string type,
-                string initialValue = null,
-                IEnumerable<AttributeDecl> attributes = null,
-                XmlDocumentation xmlDocumentation = null
-                )
+                string? initialValue = null,
+                IEnumerable<AttributeDecl>? attributes = null,
+                XmlDocumentation? xmlDocumentation = null)
         {
             Name = name;
             Modifiers = modifiers;
@@ -29,10 +28,10 @@
 
         public string Type { get; private set; }
 
-        public string InitialValue { get; private set; }
+        public string? InitialValue { get; private set; }
 
         public IEnumerable<AttributeDecl> Attributes { get; private set; }
 
-        public XmlDocumentation XmlDocumentation { get; private set; }
+        public XmlDocumentation? XmlDocumentation { get; private set; }
     }
 }

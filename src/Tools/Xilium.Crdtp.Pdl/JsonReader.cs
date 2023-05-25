@@ -48,7 +48,9 @@ public sealed class JsonReader
             domains = ReadListOfDomainSyntax(domainsElement);
         }
 
-        return new ProtocolSyntax(versionSyntax, domains);
+        return new ProtocolSyntax(
+            versionSyntax ?? new VersionSyntax(),
+            domains ?? new List<DomainSyntax>());
     }
 
     private VersionSyntax ReadVersionSyntax(JsonElement element)

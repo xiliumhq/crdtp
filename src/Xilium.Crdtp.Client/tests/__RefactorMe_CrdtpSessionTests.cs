@@ -5,7 +5,9 @@ using Xunit;
 
 namespace Xilium.Crdtp.Client.Tests
 {
+#pragma warning disable IDE1006 // Naming Styles
     public class __RefactorMe_CrdtpSessionTests
+#pragma warning restore IDE1006 // Naming Styles
     {
         internal sealed class FakeConnection : CrdtpConnection
         {
@@ -47,7 +49,7 @@ namespace Xilium.Crdtp.Client.Tests
             // TODO: Normally this code also should observe what SendAsync is not get called, nor message is serialized.
 
             var client = new CrdtpClient((handler) => new FakeConnection(handler));
-            var session = new CrdtpSession(sessionId: default);
+            var session = new CrdtpSession("");
             client.Attach(session);
             var sessionApi = new TestSessionApi(session);
             await client.OpenAsync();
@@ -70,7 +72,9 @@ namespace Xilium.Crdtp.Client.Tests
             var client = new CrdtpClient((handler) => (connection = new FakeConnection(handler)));
             Assert.NotNull(connection);
 
-            var sessionApi = client.CreateSession(sessionId: default, (session) => new TestSessionApi(session));
+            var session = new CrdtpSession("");
+            client.Attach(session);
+            var sessionApi = new TestSessionApi(session);
             await client.OpenAsync();
 
             using var cts = new CancellationTokenSource();
@@ -83,7 +87,9 @@ namespace Xilium.Crdtp.Client.Tests
             var actualException = await Assert.ThrowsAnyAsync<OperationCanceledException>(() => doCallTask);
 
             // Ensure what there is no pending requests remains.
-            Assert.Equal(0, sessionApi.GetCrdtpSession().GetNumberOfPendingRequestsForTest());
+#pragma warning disable CS0612 // Type or member is obsolete
+            Assert.Equal(0, sessionApi.GetCrdtpSession().GetNumberOfPendingRequestsForTesting());
+#pragma warning restore CS0612 // Type or member is obsolete
 
             await client.CloseAsync();
         }

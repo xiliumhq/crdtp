@@ -14,6 +14,7 @@ namespace Xilium.Crdtp.Model
             : base(context)
         {
             _objectTypeSymbol = objectTypeSymbol;
+            Check.That(objectTypeSymbol.Compilation != null);
             Check.That(objectTypeSymbol.Extends == objectTypeSymbol.Compilation.Intrinsics.Object);
             _properties = objectTypeSymbol.Properties.Select(x => new PropertyInfo(context, this, x)).ToImmutableArray();
         }

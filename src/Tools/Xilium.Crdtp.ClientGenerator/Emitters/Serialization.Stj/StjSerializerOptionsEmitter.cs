@@ -63,7 +63,7 @@ namespace Xilium.Crdtp.Emitters
                 typeMembers.Add(new CS.MethodDeclaration(
                     name: "GetConvertersCore",
                     parameters: null,
-                    returnParameter: new CS.Parameter(null, WellKnownTypes.GetICollectionOf(WellKnownTypes.JsonConverterTypeInfo).GetFullyQualifiedName()),
+                    returnParameter: new CS.Parameter(null!, WellKnownTypes.GetICollectionOf(WellKnownTypes.JsonConverterTypeInfo).GetFullyQualifiedName()),
                     modifiers: CS.CSharpModifiers.Protected | CS.CSharpModifiers.Override,
                     members: methodBody
                     ));

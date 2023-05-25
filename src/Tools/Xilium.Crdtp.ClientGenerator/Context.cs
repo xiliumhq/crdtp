@@ -25,7 +25,9 @@ namespace Xilium.Crdtp
 
         private readonly UnitTypeInfo _unitTypeInfo;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Context()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             CSharp = new CSharpCodeHelper(this);
             _symbolInfos = new();
@@ -43,9 +45,9 @@ namespace Xilium.Crdtp
             _unitTypeInfo = new(this);
         }
 
-        public OutputScope OutputScope { get; init; }
-        public ClientGeneratorOptions Options { get; init; }
-        public DefaultNamingPolicy NamingPolicy { get; internal set; }
+        public OutputScope OutputScope { get; init; } // TODO: should be required init property
+        public ClientGeneratorOptions Options { get; init; } // TODO: should be required init property
+        public DefaultNamingPolicy NamingPolicy { get; internal set; } // TODO: should be required init property?
         internal CSharpCodeHelper CSharp { get; }
 
         public SymbolInfo GetSymbolInfo(Symbol symbol)

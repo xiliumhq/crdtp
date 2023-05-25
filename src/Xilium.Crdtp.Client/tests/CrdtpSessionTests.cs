@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 using Xilium.Crdtp.Client.Serialization;
 using Xunit;
 
@@ -28,7 +24,7 @@ namespace Xilium.Crdtp.Client.Tests
         {
             var session = CreateSession();
             var actual = session.SessionId;
-            Assert.Equal(default, actual);
+            Assert.Equal("", actual);
         }
 
         [Fact]
@@ -42,6 +38,8 @@ namespace Xilium.Crdtp.Client.Tests
         public void GetClient_Detached_UndecidedBehavior()
         {
             // TODO: (High) (API) What should return CrdtpSession::GetClient, when session is detached?
+            // FIXME: Returning null should be ok, see implementation for more details.
+            // Also consider to include client in CrdtpSession ctor.
             var session = CreateSession();
             Assert.Null(session.GetClient());
         }
@@ -79,7 +77,7 @@ namespace Xilium.Crdtp.Client.Tests
             {
                 await session.SendCommandAsync<EmptyRequest, EmptyResponse>(
                     JsonEncodedText.Encode("Test.method"),
-                    parameters: default,
+                    parameters: default!,
                     cancellationToken: default);
             });
         }

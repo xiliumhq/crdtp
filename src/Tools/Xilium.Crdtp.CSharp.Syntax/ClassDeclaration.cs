@@ -6,9 +6,11 @@
     public sealed class ClassDeclaration : TypeDeclaration
     {
 
-        public ClassDeclaration(string name, TypeModifiers modifiers, IEnumerable<SyntaxObject> members, string baseType = null
-            , IEnumerable<AttributeDecl> attributes = null
-            , XmlDocumentation xmlDocumentation = null)
+        public ClassDeclaration(string name, TypeModifiers modifiers,
+            IEnumerable<SyntaxObject> members,
+            string? baseType = null,
+            IEnumerable<AttributeDecl>? attributes = null,
+            XmlDocumentation? xmlDocumentation = null)
                 : base(name, modifiers, attributes, xmlDocumentation)
         {
             Members = members.AsSyntaxList();
@@ -17,6 +19,6 @@
 
         public IEnumerable<SyntaxObject> Members { get; private set; }
 
-        public string BaseType { get; private set; }
+        public string? BaseType { get; private set; }
     }
 }

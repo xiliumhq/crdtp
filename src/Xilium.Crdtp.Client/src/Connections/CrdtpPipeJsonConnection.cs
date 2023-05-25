@@ -24,6 +24,7 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
         // FIXME: This is quick fix for issue #27.
         return SendFallbackAsync(message);
 
+#pragma warning disable CS0162 // Unreachable code detected
         if (_sendAsyncLock.Wait(0, default))
         {
             return SendLockAcquiredAsync(message);
@@ -32,6 +33,7 @@ public sealed class CrdtpPipeJsonConnection : CrdtpPipeConnection
         {
             return SendFallbackAsync(message);
         }
+#pragma warning restore CS0162 // Unreachable code detected
     }
 
     private ValueTask SendLockAcquiredAsync(ReadOnlyMemory<byte> message)

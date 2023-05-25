@@ -333,7 +333,7 @@
             }
         }
 
-        private void Visit(XmlDocumentation node)
+        private void Visit(XmlDocumentation? node)
         {
             if (node == null) return;
 
@@ -371,14 +371,20 @@
                     if (len > MAX_LINE || isMultiLine.HasValue && isMultiLine.Value)
                     {
                         _writer.WriteLine($"/// <param name=\"{param.Name}\">");
-                        foreach (var line in paramDescriptionText?.Split('\n'))
-                            _writer.WriteLine($"/// {line.Replace("\r", string.Empty, StringComparison.OrdinalIgnoreCase)}");
+                        if (!string.IsNullOrEmpty(paramDescriptionText))
+                        {
+                            foreach (var line in paramDescriptionText.Split('\n'))
+                                _writer.WriteLine($"/// {line.Replace("\r", string.Empty, StringComparison.OrdinalIgnoreCase)}");
+                        }
                         _writer.WriteLine("/// </param>");
                     }
                     else
                     {
                         _writer.Write($"/// <param name=\"{param.Name}\">");
-                        _writer.Write(paramDescriptionText);
+                        if (!string.IsNullOrEmpty(paramDescriptionText))
+                        {
+                            _writer.Write(paramDescriptionText);
+                        }
                         _writer.WriteLine("</param>");
                     }
                 }
@@ -416,7 +422,7 @@
             }
         }
 
-        private void Visit(Subconstructor node)
+        private void Visit(Subconstructor? node)
         {
             if (node == null) return;
             _writer.Write($" : {GetAccessKeywords(node.Keyword)}(");
@@ -434,7 +440,7 @@
         {
             Visit(node.XmlDocumentation);
             Visit(node.Attributes);
-            var returnType = (string.IsNullOrEmpty(node?.ReturnParameter?.Type) ? "" : $"{node.ReturnParameter.Type} ");
+            var returnType = (string.IsNullOrEmpty(node.ReturnParameter?.Type) ? "" : $"{node.ReturnParameter.Type} ");
             _writer.WriteLine($"{GetCSharpModifiers(node.Modifiers)}{returnType}{node.Name}(");
             _writer.Indent();
             var first = true;
@@ -539,7 +545,9 @@
             if ((modifiers & TypeModifiers.Sealed) != 0) sb.AppendWithLeadingSpace("sealed");
             if ((modifiers & TypeModifiers.ReadOnly) != 0) sb.AppendWithLeadingSpace("readonly");
             if ((modifiers & TypeModifiers.Partial) != 0) sb.AppendWithLeadingSpace("partial");
+#pragma warning disable CS0618 // Type or member is obsolete
             if ((modifiers & TypeModifiers.Event) != 0) sb.AppendWithLeadingSpace("event");
+#pragma warning restore CS0618 // Type or member is obsolete
             if (sb.Length > 0 && trailingSpace) sb.Append(' ');
             return sb.ToString();
         }

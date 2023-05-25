@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Xilium.Crdtp.Pdl.Syntax
 {
     public abstract class MemberSyntax
     {
-        [Obsolete("Used only by PDL parser.")]
+        // TODO: [Obsolete("Used only by PDL parser.")]
         protected MemberSyntax() { }
 
         protected MemberSyntax(ICollection<string> description,

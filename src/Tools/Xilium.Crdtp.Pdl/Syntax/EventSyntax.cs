@@ -5,7 +5,7 @@ namespace Xilium.Crdtp.Pdl.Syntax
 {
     public sealed class EventSyntax : NamedMemberWithParametersSyntax
     {
-        [Obsolete("Used only by PDL parser.")]
+        // TODO: [Obsolete("Used only by PDL parser.")]
         public EventSyntax() { }
 
         public EventSyntax(

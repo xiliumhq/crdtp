@@ -83,7 +83,11 @@ namespace Xilium.Crdtp.Emitters
 
                 var csEventNode = new CS.PropertyDeclaration( // TODO: should be event
                     name: eventInfo.Name,
-                    typeModifiers: CS.TypeModifiers.Public | CS.TypeModifiers.Event | CS.TypeModifiers.ReadOnly,
+                    typeModifiers: CS.TypeModifiers.Public |
+#pragma warning disable CS0618 // Type or member is obsolete
+                    CS.TypeModifiers.Event |
+#pragma warning restore CS0618 // Type or member is obsolete
+                    CS.TypeModifiers.ReadOnly,
                     type: $"System.EventHandler<{paramsType}>",
                     accessorList: new CS.AccessorDeclaration[]
                     {
@@ -116,17 +120,19 @@ namespace Xilium.Crdtp.Emitters
             string getCrdtpSessionExpr,
             bool throwingMethod)
         {
-            DebugCheck.That(command != null);
+            Check.That(command != null);
 
             // TODO: Make it configurable
-            const bool invokeSendReturnsUnit = false;
+            bool invokeSendReturnsUnit = false;
 
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             // TODO: Add option to always generate SendCommandAsync, and get
             // result in generated method (for throwing)
-            const bool useSendCommandForThrowingMethod = false;
+            bool useSendCommandForThrowingMethod = false;
             // TODO: Add option to generate await inside command invokers to
             // make clear stacktrace.
-            const bool invokeUsesAwaits = false;
+            bool invokeUsesAwaits = false;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
             var parametersType = command.ParametersType;
             var returnType = command.ReturnType;

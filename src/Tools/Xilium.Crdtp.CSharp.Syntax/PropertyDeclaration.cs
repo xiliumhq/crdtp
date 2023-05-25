@@ -10,8 +10,8 @@
                 string name,
                 TypeModifiers typeModifiers,
                 string type,
-                IEnumerable<AttributeDecl> attributes = null,
-                XmlDocumentation xmlDocumentation = null
+                IEnumerable<AttributeDecl>? attributes = null,
+                XmlDocumentation? xmlDocumentation = null
                 )
             : this(name,
                     typeModifiers,
@@ -28,8 +28,8 @@
             TypeModifiers typeModifiers, // TODO: property declaration should use member access modifiers, not TypeModifiers
             string type,
             ArrowExpressionClause arrowExpression,
-            IEnumerable<AttributeDecl> attributes = null,
-            XmlDocumentation xmlDocumentation = null
+            IEnumerable<AttributeDecl>? attributes = null,
+            XmlDocumentation? xmlDocumentation = null
         )
         {
             Name = name;
@@ -46,8 +46,8 @@
                 TypeModifiers typeModifiers,
                 string type,
                 IEnumerable<AccessorDeclaration> accessorList,
-                IEnumerable<AttributeDecl> attributes = null,
-                XmlDocumentation xmlDocumentation = null
+                IEnumerable<AttributeDecl>? attributes = null,
+                XmlDocumentation? xmlDocumentation = null
                 )
         {
             Name = name;
@@ -68,9 +68,9 @@
 
         public IEnumerable<AttributeDecl> Attributes { get; private set; }
 
-        public XmlDocumentation XmlDocumentation { get; private set; }
+        public XmlDocumentation? XmlDocumentation { get; private set; }
 
-        public ArrowExpressionClause ArrowExpression { get; private set; }
+        public ArrowExpressionClause? ArrowExpression { get; private set; }
 
         public IEnumerable<AccessorDeclaration> AccessorList { get; private set; }
     }

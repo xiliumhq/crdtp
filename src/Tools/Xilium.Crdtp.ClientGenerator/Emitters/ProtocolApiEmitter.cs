@@ -56,7 +56,7 @@ namespace Xilium.Crdtp.Emitters
             typeMembers.Add(new CS.MethodDeclaration(
                 name: "GetCrdtpSession",
                 parameters: null,
-                returnParameter: new CS.Parameter(null, Context.Options.CrdtpSessionTypeName),
+                returnParameter: new CS.Parameter(null!, Context.Options.CrdtpSessionTypeName),
                 modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.ReadOnly,
                 arrowExpression: new CS.ArrowExpressionClause($"{crdtpSessionFieldDecl.Name}")
                 ));

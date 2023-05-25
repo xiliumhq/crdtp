@@ -1,8 +1,7 @@
-﻿using System;
-
-namespace Xilium.Crdtp.Pdl.Syntax
+﻿namespace Xilium.Crdtp.Pdl.Syntax
 {
-    [Obsolete("This is not needed.")]
+    // TODO: TypeKind is not needed completely.
+    // [Obsolete("This is not needed.")]
     public enum TypeKind
     {
         Primitive,

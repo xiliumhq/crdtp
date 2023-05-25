@@ -6,15 +6,15 @@ namespace Xilium.Crdtp
 {
     public sealed class ClientGeneratorOptions
     {
-        public IReadOnlyList<string> InputFiles { get; set; }
-        public string OutputPath { get; set; }
+        public IReadOnlyList<string> InputFiles { get; set; } = default!;
+        public string OutputPath { get; set; } = default!;
 
         public string Namespace { get; set; } = "Xilium.Crdtp.Protocol";
         public bool EmitDocumentation { get; set; } = true;
         public bool EmitTypeAnalysis { get; set; } = false;
         public bool EmitPartialTypes { get; set; } = false;
 
-        public StjSerializationOptions Stj { get; set; } // TODO: apply defaults
+        public StjSerializationOptions Stj { get; set; } = default!; // TODO: apply defaults
 
         public string ProtocolApiTypeName { get; set; } = "ProtocolApi";
 

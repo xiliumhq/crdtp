@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
 using Xilium.Crdtp.Pdl.Syntax;
@@ -11,16 +12,19 @@ namespace Xilium.Crdtp.Pdl
     {
         private class ItemKind
         {
-            private CommandSyntax _command;
-            public CommandSyntax Command { get => _command; set { _type = null; _event = null; _command = value; } }
+            private CommandSyntax? _command;
+            public CommandSyntax? Command { get => _command; set { _type = null; _event = null; _command = value; } }
+            [MemberNotNullWhen(true, nameof(Command))]
             public bool IsCommand => Command != null;
 
-            private EventSyntax _event;
-            public EventSyntax Event { get => _event; set { _type = null; _event = value; _command = null; } }
+            private EventSyntax? _event;
+            public EventSyntax? Event { get => _event; set { _type = null; _event = value; _command = null; } }
+            [MemberNotNullWhen(true, nameof(Event))]
             public bool IsEvent => Event != null;
 
-            private TypeSyntax _type;
-            public TypeSyntax Type { get => _type; set { _type = value; _event = null; _command = null; } }
+            private TypeSyntax? _type;
+            public TypeSyntax? Type { get => _type; set { _type = value; _event = null; _command = null; } }
+            [MemberNotNullWhen(true, nameof(Type))]
             public bool IsType => Type != null;
         }
 
@@ -34,10 +38,10 @@ namespace Xilium.Crdtp.Pdl
             var lineNum = 0;
             var nukeDescription = false;
             var description = new Collection<string>();
-            DomainSyntax domain = null;
+            DomainSyntax? domain = null;
             var itemKind = new ItemKind(); //command/event/type
-            ICollection<PropertySyntax> subitems = null; //arguments for parameters|returns|properties
-            ICollection<string> enumliterals = null;
+            ICollection<PropertySyntax>? subitems = null; //arguments for parameters|returns|properties
+            ICollection<string>? enumliterals = null;
 
             while (true)
             {
@@ -76,6 +80,7 @@ namespace Xilium.Crdtp.Pdl
                 match = Regex.Match(line, @"^  depends on ([^\s]+)", regexOptions);
                 if (match.Success)
                 {
+                    Check.That(domain != null);
                     domain.Depends.Add(match.Groups[1].Value);
                     continue;
                 }
@@ -100,6 +105,7 @@ namespace Xilium.Crdtp.Pdl
                     //
                     t.Extends = type;
                     itemKind.Type = t;
+                    Check.That(domain != null);
                     domain.Types.Add(t);
                     continue;
                 }
@@ -125,6 +131,7 @@ namespace Xilium.Crdtp.Pdl
                             Description = description,
                             Name = match.Groups[4].Value
                         };
+                        Check.That(domain != null);
                         domain.Commands.Add(itemKind.Command);
                     }
                     else
@@ -136,6 +143,7 @@ namespace Xilium.Crdtp.Pdl
                             Description = description,
                             Name = match.Groups[4].Value
                         };
+                        Check.That(domain != null);
                         domain.Events.Add(itemKind.Event);
                     }
                     continue;
@@ -181,10 +189,12 @@ namespace Xilium.Crdtp.Pdl
                     else if (mapBinaryToString && string.Equals(PdlTypes.Binary, type))
                         type = PdlTypes.String;
                     //
+#pragma warning disable CS0612 // Type or member is obsolete
                     arg.TypeKind = PdlTypes.Contains(type) ? TypeKind.Primitive : TypeKind.Reference;
+#pragma warning restore CS0612 // Type or member is obsolete
                     arg.Type = type;
+                    Check.That(subitems != null);
                     subitems.Add(arg);
-
                     continue;
                 }
                 //match = re.compile(
@@ -289,6 +299,7 @@ namespace Xilium.Crdtp.Pdl
                 match = Regex.Match(line, @"^      (  )?[^\s]+$", regexOptions);
                 if (match.Success)
                 {
+                    Check.That(enumliterals != null);
                     enumliterals.Add(trimLine);
                     continue;
                 }

@@ -5,8 +5,10 @@ namespace Xilium.Crdtp.Pdl.Syntax
 {
     public class PropertySyntax : MemberSyntax
     {
-        [Obsolete("Used only by PDL parser.")]
+        // TODO: [Obsolete("Used only by PDL parser.")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PropertySyntax() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public PropertySyntax(
             // MemberSyntax
@@ -24,7 +26,9 @@ namespace Xilium.Crdtp.Pdl.Syntax
         {
             Name = name;
             Type = type;
+#pragma warning disable CS0612 // Type or member is obsolete
             TypeKind = typeKind;
+#pragma warning restore CS0612 // Type or member is obsolete
             IsArray = isArray;
             IsOptional = isOptional;
             Enum = enumMembers;

@@ -66,7 +66,7 @@ namespace Xilium.Crdtp.Emitters
                         new CS.Parameter("typeToConvert", "Type"),
                         new CS.Parameter("options", "JsonSerializerOptions")
                     },
-                    returnParameter: new CS.Parameter(null, _typeInfo.GetFullyQualifiedName()),
+                    returnParameter: new CS.Parameter(null!, _typeInfo.GetFullyQualifiedName()),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Override,
                     members: methodBody
                     ));
@@ -91,7 +91,7 @@ namespace Xilium.Crdtp.Emitters
                         new CS.Parameter("value", _typeInfo.GetFullyQualifiedName()),
                         new CS.Parameter("options", "JsonSerializerOptions")
                     },
-                    returnParameter: new CS.Parameter(null, "void"),
+                    returnParameter: new CS.Parameter(null!, "void"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Override,
                     members: methodBody
                     ));

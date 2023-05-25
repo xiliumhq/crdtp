@@ -131,7 +131,7 @@ namespace Xilium.Crdtp.Emitters
             var getUnderlyingValueDecl = new CS.MethodDeclaration(
                 "GetUnderlyingValue",
                 parameters: null,
-                returnParameter: new CS.Parameter(null, type: underlyingValueType),
+                returnParameter: new CS.Parameter(null!, type: underlyingValueType),
                 modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.ReadOnly,
                 attributes: new[] { aggressiveInliningAttr },
                 xmlDocumentation: null,
@@ -146,7 +146,7 @@ namespace Xilium.Crdtp.Emitters
                 var getHashCodeDecl = new CS.MethodDeclaration(
                     "GetHashCode",
                     parameters: null,
-                    returnParameter: new CS.Parameter(null, type: "int"),
+                    returnParameter: new CS.Parameter(null!, type: "int"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Override,
                     attributes: null,
                     xmlDocumentation: null,
@@ -159,7 +159,7 @@ namespace Xilium.Crdtp.Emitters
                 var toStringDecl = new CS.MethodDeclaration(
                     "ToString",
                     parameters: null,
-                    returnParameter: new CS.Parameter(null, type: "string"),
+                    returnParameter: new CS.Parameter(null!, type: "string"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Override,
                     attributes: null,
                     xmlDocumentation: null,
@@ -172,7 +172,7 @@ namespace Xilium.Crdtp.Emitters
                 var objectEqualsDecl = new CS.MethodDeclaration(
                     "Equals",
                     parameters: new[] { new CS.Parameter("obj", "object?") },
-                    returnParameter: new CS.Parameter(null, type: "bool"),
+                    returnParameter: new CS.Parameter(null!, type: "bool"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Override,
                     attributes: null,
                     xmlDocumentation: null,
@@ -186,7 +186,7 @@ namespace Xilium.Crdtp.Emitters
                 var equalsDecl = new CS.MethodDeclaration(
                     "Equals",
                     parameters: new[] { new CS.Parameter("other", typeName) },
-                    returnParameter: new CS.Parameter(null, type: "bool"),
+                    returnParameter: new CS.Parameter(null!, type: "bool"),
                     modifiers: CS.CSharpModifiers.Public,
                     attributes: null,
                     xmlDocumentation: null,
@@ -199,7 +199,7 @@ namespace Xilium.Crdtp.Emitters
                 var opEqDecl = new CS.MethodDeclaration(
                     "operator==",
                     parameters: new[] { new CS.Parameter("x", typeName), new CS.Parameter("y", typeName) },
-                    returnParameter: new CS.Parameter(null, type: "bool"),
+                    returnParameter: new CS.Parameter(null!, type: "bool"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Static,
                     attributes: null,
                     xmlDocumentation: null,
@@ -212,7 +212,7 @@ namespace Xilium.Crdtp.Emitters
                 var opNeqDecl = new CS.MethodDeclaration(
                     "operator!=",
                     parameters: new[] { new CS.Parameter("x", typeName), new CS.Parameter("y", typeName) },
-                    returnParameter: new CS.Parameter(null, type: "bool"),
+                    returnParameter: new CS.Parameter(null!, type: "bool"),
                     modifiers: CS.CSharpModifiers.Public | CS.CSharpModifiers.Static,
                     attributes: null,
                     xmlDocumentation: null,

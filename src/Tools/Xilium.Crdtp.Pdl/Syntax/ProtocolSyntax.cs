@@ -5,7 +5,7 @@ namespace Xilium.Crdtp.Pdl.Syntax
 {
     public sealed class ProtocolSyntax
     {
-        [Obsolete("Used by PDL parser, but it should not be used in such way.")]
+        // TODO: [Obsolete("Used by PDL parser, but it should not be used in such way.")]
         public ProtocolSyntax() { }
 
         public ProtocolSyntax(VersionSyntax version,

@@ -14,7 +14,7 @@ namespace Xilium.Crdtp.Emitters
             _aliasTypeInfo = aliasTypeInfo;
         }
 
-        protected TypeInfo UnderlyingTypeInfo => _aliasTypeInfo.UnderlyingType;
+        private TypeInfo UnderlyingTypeInfo => _aliasTypeInfo.UnderlyingType;
 
         protected override IEnumerable<CS.SyntaxObject> GetReadBody()
         {

@@ -478,8 +478,9 @@ namespace Xilium.Crdtp.Client
             }
         }
 
-        [Obsolete("This method will be removed soon.")]
-        public int GetNumberOfPendingRequestsForTest() => _requests.Count;
+        // TODO: Move this method to metrics. This method is obsoleted.
+        [Obsolete]
+        public int GetNumberOfPendingRequestsForTesting() => _requests.Count;
 
         internal void Dispatch(Dispatchable dispatchable)
         {
@@ -524,6 +525,8 @@ namespace Xilium.Crdtp.Client
         private sealed class DefaultSessionHandler : CrdtpSessionHandler
         {
             public static DefaultSessionHandler Instance { get; } = new();
+
+            private DefaultSessionHandler() { }
 
             protected internal override void OnAttach() { }
 

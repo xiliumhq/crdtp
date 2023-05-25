@@ -6,8 +6,10 @@ namespace Xilium.Crdtp.Pdl.Syntax
     // TODO: actually should be NamedMemberSyntax, but need care about NamedMemberWithParametersSyntax
     public class TypeSyntax : MemberSyntax
     {
-        [Obsolete("Used only by PDL parser.")]
+        // TODO: [Obsolete("Used only by PDL parser.")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public TypeSyntax() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public TypeSyntax(
             // MemberSyntax

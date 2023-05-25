@@ -9,8 +9,8 @@
         public TypeDeclaration(
                 string name,
                 TypeModifiers modifiers,
-                IEnumerable<AttributeDecl> attributes,
-                XmlDocumentation xmlDocumentation
+                IEnumerable<AttributeDecl>? attributes,
+                XmlDocumentation? xmlDocumentation
                 )
         {
             Name = name;
@@ -25,6 +25,6 @@
 
         public IEnumerable<AttributeDecl> Attributes { get; private set; }
 
-        public XmlDocumentation XmlDocumentation { get; private set; }
+        public XmlDocumentation? XmlDocumentation { get; private set; }
     }
 }

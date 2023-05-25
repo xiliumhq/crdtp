@@ -11,6 +11,8 @@ using System.Diagnostics;
 
 namespace Xilium.Crdtp.Buffers
 {
+    // TODO: Don't use `throw Error.Argument`, and use specialized methods with fixed arg name.
+
     // TODO(dmitry.azaraev): Instead of resizing array (since it allocate new array anyway),
     // it would be better to return buffer into buffer pool. E.g. create "PooledArrayBufferWriter".
 

@@ -7,7 +7,7 @@ namespace Xilium.Crdtp.Sema.Symbols
         public abstract string Name { get; }
         public abstract ImmutableArray<PropertySymbol> Parameters { get; }
         public abstract ImmutableArray<PropertySymbol> Returns { get; }
-        public abstract string Redirect { get; }
+        public abstract string? Redirect { get; }
         public abstract ImmutableArray<string> RedirectDescription { get; }
     }
 }

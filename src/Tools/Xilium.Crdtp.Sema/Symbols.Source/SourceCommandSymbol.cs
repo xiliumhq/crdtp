@@ -30,7 +30,7 @@ namespace Xilium.Crdtp.Sema.Symbols.Source
 
         public override ImmutableArray<PropertySymbol> Returns => _returns;
 
-        public override string Redirect => _commandSyntax.Redirect;
+        public override string? Redirect => _commandSyntax.Redirect;
 
         public override ImmutableArray<string> RedirectDescription => _commandSyntax.RedirectDescription.ToImmutableArray();
 

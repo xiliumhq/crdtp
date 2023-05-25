@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Xilium.Crdtp.Pdl.Syntax
+﻿namespace Xilium.Crdtp.Pdl.Syntax
 {
     public sealed class VersionSyntax
     {
-        [Obsolete("Used by PDL parser, but it should not be used in such way.")]
+        // TODO: [Obsolete("Used by PDL parser, but it should not be used in such way.")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public VersionSyntax() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public VersionSyntax(string major, string minor)
         {

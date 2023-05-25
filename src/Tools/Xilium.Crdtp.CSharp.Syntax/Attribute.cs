@@ -1,13 +1,13 @@
 ﻿namespace Xilium.Chromium.DevTools.Syntax
 {
-
     using System.Collections.Generic;
 
     public sealed class AttributeDecl : SyntaxObject
     {
-
         // TODO: named parameters should be immutable
-        public AttributeDecl(string name, IEnumerable<string> parameters = null, IDictionary<string, string> namedParameters = null)
+        public AttributeDecl(string name,
+            IEnumerable<string>? parameters = null,
+            IDictionary<string, string>? namedParameters = null)
         {
             Name = name;
             Parameters = parameters.AsSyntaxList();
