@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
+using Xilium.Threading;
 
 namespace Xilium.Crdtp.Client;
 
@@ -56,8 +57,8 @@ internal interface ISessionApi
     // TODO: Add option "Once"
     // TODO: Add other overloads.
     // TODO: If profitable (and it should - use JsonEncodedText) as overloads.
-    void AddEventHandler<TEvent>(string name, EventHandler<TEvent> handler, object? sender = default);
-    void AddEventHandler(string name, EventHandler handler, object? sender = default);
+    void AddEventHandler<TEvent>(string name, EventHandler<TEvent> handler, object? sender = default, TaskRunner? taskRunner = default);
+    void AddEventHandler(string name, EventHandler handler, object? sender = default, TaskRunner? taskRunner = default);
     bool RemoveEventHandler<TEvent>(string name, EventHandler<TEvent> handler, object? sender = default);
     bool RemoveEventHandler(string name, EventHandler handler, object? sender = default);
 

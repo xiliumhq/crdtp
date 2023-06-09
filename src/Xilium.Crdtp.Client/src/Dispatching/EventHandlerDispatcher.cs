@@ -1,21 +1,35 @@
 ﻿using System;
 using System.Text.Json;
+using System.Threading;
 using Xilium.Crdtp.Core;
+using Xilium.Threading;
 
 namespace Xilium.Crdtp.Client.Dispatching
 {
     // TODO(dmitry.azaraev): EventHandlerDispatcher might share common deserialization logic.
     internal sealed class EventHandlerDispatcher<TEvent> : CrdtpDispatcher
     {
-        private readonly CrdtpSession _session;
+        // private readonly CrdtpSession _session;
         private readonly EventHandler<TEvent> _handler;
         private readonly object? _sender;
+        private readonly TaskRunner? _taskRunner;
+        private readonly SendOrPostCallback _cachedAction;
 
-        public EventHandlerDispatcher(CrdtpSession session, EventHandler<TEvent> handler, object? sender)
+        public EventHandlerDispatcher(CrdtpSession session,
+            EventHandler<TEvent> handler,
+            object? sender,
+            TaskRunner? taskRunner)
         {
-            _session = session;
+            // _session = session;
             _handler = handler;
-            _sender = sender;
+            _sender = sender ?? session;
+            _taskRunner = taskRunner;
+
+            _cachedAction = (object? arg) =>
+            {
+                // TODO(dmitry.azaraev): (High) catch and report exceptions back to session.
+                _handler(_sender, (TEvent)arg!);
+            };
         }
 
         public override void Dispatch(CrdtpDispatchContext context, Dispatchable dispatchable)
@@ -35,7 +49,15 @@ namespace Xilium.Crdtp.Client.Dispatching
                 {
                     Check.That(result != null); // TODO: Better error reporting. Not sure if protocol allow null in that case.
                 }
-                _handler(_sender ?? _session, result!); // TODO(dmitry.azaraev): (High) catch and report exceptions back to session.
+
+                if (_taskRunner != null)
+                {
+                    _taskRunner.PostTask(_cachedAction, result);
+                }
+                else
+                {
+                    _handler(_sender, result!); // TODO(dmitry.azaraev): (High) catch and report exceptions back to session.
+                }
             }
             else throw Error.InvalidOperation("Invalid data type."); // TODO: there is protocol violation, but we should always create correct Dispatchable, and handle this violation at higher level. Event message must not hold error.
         }

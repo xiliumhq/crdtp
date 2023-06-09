@@ -8,6 +8,7 @@ using Xilium.Crdtp.Buffers;
 using Xilium.Crdtp.Client.Dispatching;
 using Xilium.Crdtp.Client.Serialization;
 using Xilium.Crdtp.Core;
+using Xilium.Threading;
 
 namespace Xilium.Crdtp.Client
 {
@@ -25,6 +26,7 @@ namespace Xilium.Crdtp.Client
         internal readonly CrdtpClient _client;
         private readonly string _sessionId;
         private readonly CrdtpSessionHandler _handler;
+        internal readonly TaskRunner? _taskRunner;
 
         // TODO: Rename to StateLock
         internal readonly object StateAndRequestMapLock = new object();
@@ -39,19 +41,24 @@ namespace Xilium.Crdtp.Client
         // request map, and this operations performed under RequestMapLock;
         internal int _numberOfPendingRequests;
 
-        public CrdtpSession(CrdtpClient client, string sessionId, CrdtpSessionHandler? handler = null)
+        public CrdtpSession(CrdtpClient client, string sessionId,
+            CrdtpSessionHandler? handler = null,
+            TaskRunner? taskRunner = null)
         {
             Check.Argument.NotNull(client, nameof(client));
             Check.Argument.NotNull(sessionId, nameof(sessionId));
 
             _client = client;
             _sessionId = sessionId;
-            _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
             _handler = handler ?? DefaultSessionHandler.Instance;
+            _taskRunner = taskRunner ?? _client._taskRunner;
+            _jsonEncodedSessionId = JsonEncodedText.Encode(sessionId);
             _eventDispatchers = new Dictionary<string, CrdtpDispatcher>();
         }
 
         public string SessionId => _sessionId;
+
+        public TaskRunner? TaskRunner => _taskRunner;
 
         public bool IsAttached => _isAttached;
 
@@ -107,7 +114,7 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             var response = await SendCommandAsync<TRequest, Unit>(
-                method, parameters, cancellationToken).ConfigureAwait(false);
+                method, parameters, cancellationToken);
             _ = response.GetResult();
         }
 
@@ -117,7 +124,7 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             var response = await SendCommandAsync<TRequest, Unit>(
-                method, parameters, cancellationToken).ConfigureAwait(false);
+                method, parameters, cancellationToken);
             _ = response.GetResult();
         }
 
@@ -127,7 +134,7 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             var response = await SendCommandAsync<TRequest, TResponse>(method,
-                parameters, cancellationToken).ConfigureAwait(false);
+                parameters, cancellationToken);
             return response.GetResult();
         }
 
@@ -137,7 +144,7 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             var response = await SendCommandAsync<TRequest, TResponse>(method,
-                parameters, cancellationToken).ConfigureAwait(false);
+                parameters, cancellationToken);
             return response.GetResult();
         }
 
@@ -152,8 +159,7 @@ namespace Xilium.Crdtp.Client
             CancellationToken cancellationToken = default)
         {
             var response = await SendCommandAsync<TRequest, Unit>(
-                JsonEncodedText.Encode(method), parameters, cancellationToken)
-                .ConfigureAwait(false);
+                JsonEncodedText.Encode(method), parameters, cancellationToken);
             return new CrdtpResponse(response);
         }
 
@@ -161,8 +167,8 @@ namespace Xilium.Crdtp.Client
             TRequest parameters,
             CancellationToken cancellationToken = default)
         {
-            var response = await SendCommandAsync<TRequest, Unit>(method, parameters, cancellationToken)
-                .ConfigureAwait(false);
+            var response = await SendCommandAsync<TRequest, Unit>(method,
+                parameters, cancellationToken);
             return new CrdtpResponse(response);
         }
 
@@ -271,6 +277,9 @@ namespace Xilium.Crdtp.Client
             CrdtpArrayBufferWriter<byte> bufferWriter,
             CrdtpRequest<TResponse> request)
         {
+            // TODO: Reimplement this, as we need await only sending, while
+            // we may return request task without awaiting on it.
+
             try
             {
                 await sendTask.ConfigureAwait(false);
@@ -360,7 +369,7 @@ namespace Xilium.Crdtp.Client
 
         #region Events
 
-        internal void AddEventDispatcher(string name, CrdtpDispatcher dispatcher) // TODO: make it public
+        private void AddEventDispatcher(string name, CrdtpDispatcher dispatcher) // TODO: make it public
         {
             // TODO: Support multiple dispatchers for same event.
             // Naive multi-dispatch implementation may have issue what same response will be deserialized multiple times.
@@ -385,22 +394,34 @@ namespace Xilium.Crdtp.Client
             }
         }
 
-        internal void RemoveEventDispatcher(string name, CrdtpDispatcher dispatcher)
+        private void RemoveEventDispatcher(string name, CrdtpDispatcher dispatcher)
             => throw Error.NotImplemented();
 
-        public void AddEventHandler<TEvent>(string name, EventHandler<TEvent> handler, object? sender = default)
+        public void AddEventHandler<TEvent>(string name,
+            EventHandler<TEvent> handler,
+            object? sender = default,
+            TaskRunner? taskRunner = default)
         {
-            var dispatcher = new EventHandlerDispatcher<TEvent>(this, handler, sender);
+            taskRunner ??= _taskRunner ?? _client._taskRunner;
+
+            var dispatcher = new EventHandlerDispatcher<TEvent>(this, handler, sender, taskRunner);
             AddEventDispatcher(name, dispatcher);
         }
 
-        public void AddEventHandler(string name, EventHandler handler, object? sender = default)
+        public void AddEventHandler(string name,
+            EventHandler handler,
+            object? sender = default,
+            TaskRunner? taskRunner = default)
             => throw Error.NotImplemented();
 
-        public bool RemoveEventHandler<TEvent>(string name, EventHandler<TEvent> handler, object? sender = default)
+        public bool RemoveEventHandler<TEvent>(string name,
+            EventHandler<TEvent> handler,
+            object? sender = default)
             => throw Error.NotImplemented();
 
-        public bool RemoveEventHandler(string name, EventHandler handler, object? sender = default)
+        public bool RemoveEventHandler(string name,
+            EventHandler handler,
+            object? sender = default)
             => throw Error.NotImplemented();
 
         #endregion

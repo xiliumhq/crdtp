@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
+using Xilium.Threading;
 
 namespace Xilium.Crdtp.Client
 {
@@ -21,6 +22,7 @@ namespace Xilium.Crdtp.Client
 
         private readonly CrdtpConnection _connection;
         private readonly CrdtpEncoding _encoding;
+        internal readonly TaskRunner? _taskRunner;
         private readonly CrdtpLogger? _logger; // TODO: Implement null logger instead of nullability checks
         private readonly CrdtpClientHandler? _handler;
 
@@ -37,10 +39,12 @@ namespace Xilium.Crdtp.Client
 
         public CrdtpClient(Func<CrdtpConnectionDelegate, CrdtpConnection> connectionFactory,
             CrdtpClientHandler? handler = null,
+            TaskRunner? taskRunner = null,
             CrdtpLogger? logger = null)
         {
             _connection = connectionFactory(new ConnectionDelegate(this));
             _handler = handler;
+            _taskRunner = taskRunner;
             _logger = logger;
             _encoding = _connection.Encoding;
             // TODO: Add _connection.Framing option (Raw, RawWithTrailingZero)
@@ -50,6 +54,8 @@ namespace Xilium.Crdtp.Client
             _sessions = new Dictionary<string, CrdtpSession>();
             _requests = new Dictionary<int, CrdtpRequest>();
         }
+
+        public TaskRunner? TaskRunner => _taskRunner;
 
         public CrdtpClientState State => _state;
 

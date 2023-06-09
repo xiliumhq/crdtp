@@ -84,6 +84,10 @@
     <Compile Include="Serialization\Stj\StjOptions.cs" />
     <Compile Include="Serialization\Stj\StjSerializerOptions.cs" />
     <Compile Include="Serialization\StjEncodedProperties.cs" />
+    <Compile Include="Xi.Threading\SequencedTaskRunner.cs" />
+    <Compile Include="Xi.Threading\TaskRunner.cs" />
+    <Compile Include="Xi.Threading\Tasks\TaskRunnerAwaiter.cs" />
+    <Compile Include="Xi.Threading\ThreadPoolSequencedTaskRunner.cs" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
