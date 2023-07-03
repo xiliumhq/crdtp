@@ -119,7 +119,8 @@ namespace Xilium.Crdtp
             }
 
             // Pass: Emitting Types
-            var stjSerializerOptionsEmitter = new StjSerializerOptionsEmitter(context);
+            var stjSerializationContextFactoryEmitter = new StjSerializationContextFactoryEmitter(context);
+            var stjSerializerContextEmitter = new StjSerializerContextEmitter(context);
 
             foreach (var typeInfo in context.GetReachableNodes<TypeInfo>())
             {
@@ -139,6 +140,8 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(stjConverterEmitter);
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -155,6 +158,8 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(stjConverterEmitter);
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -171,11 +176,15 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(stjConverterEmitter);
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
                     case IntrinsicTypeInfo x:
-                        // no-op
+                        {
+                            context.AddToSerializerContext(x);
+                        }
                         break;
 
                     default: throw Error.NotImplemented("Invalid type info type: {0}", typeInfo.GetType().Name);
@@ -187,7 +196,8 @@ namespace Xilium.Crdtp
             {
                 emitter.Emit();
             }
-            stjSerializerOptionsEmitter.Emit();
+            stjSerializationContextFactoryEmitter.Emit();
+            stjSerializerContextEmitter.Emit();
 
             // Pass: Emitting "DomainApi" types
             foreach (var domainInfo in context.GetReachableNodes<DomainInfo>())
@@ -196,7 +206,7 @@ namespace Xilium.Crdtp
             }
 
             // Pass: Emitting "ProtocolApi" type
-            new ProtocolApiEmitter(context, stjSerializerOptionsEmitter).Emit();
+            new ProtocolApiEmitter(context, stjSerializationContextFactoryEmitter).Emit();
 
             // Writing "Protocol.g.props" file.
             new ProjectEmitter(context).Emit();

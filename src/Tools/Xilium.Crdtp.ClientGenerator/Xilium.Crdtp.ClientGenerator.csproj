@@ -17,7 +17,8 @@
     <Compile Include="Emitters\Serialization.Stj\Converters\StjEnumConverterEmitter.cs" />
     <Compile Include="Emitters\Serialization.Stj\Converters\StjAliasConverterEmitter.cs" />
     <Compile Include="Emitters\Serialization.Stj\Converters\StjConverterEmitter.cs" />
-    <Compile Include="Emitters\Serialization.Stj\StjSerializerOptionsEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\StjSerializerContextEmitter.cs" />
+    <Compile Include="Emitters\Serialization.Stj\StjSerializationContextFactoryEmitter.cs" />
     <Compile Include="Emitters\ProtocolApiEmitter.cs" />
     <Compile Include="Emitters\DomainApiEmitter.cs" />
     <Compile Include="Emitters\Emitter.cs" />

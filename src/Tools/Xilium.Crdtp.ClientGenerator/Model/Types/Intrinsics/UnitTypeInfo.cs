@@ -7,8 +7,9 @@
         { }
 
         public override string Name => "Unit";
-
         public override string Namespace => "Xilium.Crdtp.Core";
+
+        public override bool UseInSerializationContext() => false;
 
         public override bool IsValueType => false;
     }

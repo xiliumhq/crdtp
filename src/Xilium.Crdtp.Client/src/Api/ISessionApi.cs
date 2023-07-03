@@ -65,6 +65,6 @@ internal interface ISessionApi
     #endregion
 
     // Infrastructure methods.
-    void UseSerializerOptions(StjSerializerOptions options);
+    void UseSerializationContextFactory(StjSerializationContextFactory options);
 }
 #endif

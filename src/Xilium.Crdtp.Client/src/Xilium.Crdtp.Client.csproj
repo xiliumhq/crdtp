@@ -79,10 +79,11 @@
     <Compile Include="Serialization\Stj\Converters\DoubleJsonConverter.cs" />
     <Compile Include="Serialization\Stj\Converters\StringJsonConverter.cs" />
     <Compile Include="Serialization\Stj\Converters\UnitJsonConverter.cs" />
-    <Compile Include="Serialization\Stj\DefaultStjSerializerOptions.cs" />
-    <Compile Include="Serialization\Stj\StjJsonSerializerOptionsBuilder.cs" />
+    <Compile Include="Serialization\Stj\DefaultJsonSerializationContextFactory.cs" />
+    <Compile Include="Serialization\Stj\DefaultJsonSerializerContext.cs" />
+    <Compile Include="Serialization\Stj\StjTypeInfoResolver.cs" />
     <Compile Include="Serialization\Stj\StjOptions.cs" />
-    <Compile Include="Serialization\Stj\StjSerializerOptions.cs" />
+    <Compile Include="Serialization\Stj\StjSerializationContextFactory.cs" />
     <Compile Include="Serialization\StjEncodedProperties.cs" />
     <Compile Include="Xi.Threading\SequencedTaskRunner.cs" />
     <Compile Include="Xi.Threading\TaskRunner.cs" />
@@ -95,7 +96,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>
 
 </Project>

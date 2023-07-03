@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Serialization;
@@ -18,7 +19,7 @@ namespace Xilium.Crdtp.Client
         , IClientApi
 #endif
     {
-        private static readonly StjJsonSerializerOptionsBuilder s_jsonSerializerOptionsBuilder = CreateJsonSerializerOptionsBuilder();
+        private static readonly StjTypeInfoResolver s_jsonTypeInfoResolver = CreateJsonSerializerContextBuilder();
 
         private readonly CrdtpConnection _connection;
         private readonly CrdtpEncoding _encoding;
@@ -277,16 +278,19 @@ namespace Xilium.Crdtp.Client
             return _connection.SendAsync(message);
         }
 
-        // TODO(dmitry.azaraev): (Low) AggressiveInline
-        internal static StjJsonSerializerOptionsBuilder JsonSerializerOptionsBuilder
-            => s_jsonSerializerOptionsBuilder;
-
-        private static StjJsonSerializerOptionsBuilder CreateJsonSerializerOptionsBuilder()
+        internal static StjTypeInfoResolver StjTypeInfoResolver
         {
-            var provider = new StjJsonSerializerOptionsBuilder(DefaultStjSerializerOptions.CreateJsonSerializerOptions());
-            provider.Add(new DefaultStjSerializerOptions());
-            return provider;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return s_jsonTypeInfoResolver;
+            }
         }
+
+        private static StjTypeInfoResolver CreateJsonSerializerContextBuilder()
+            => new StjTypeInfoResolver(
+                new DefaultJsonSerializationContextFactory()
+                );
 
         internal void OnOpen()
         {

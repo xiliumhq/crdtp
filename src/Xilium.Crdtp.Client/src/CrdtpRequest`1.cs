@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Dispatching;
+using Xilium.Crdtp.Client.Serialization;
 using Xilium.Crdtp.Core;
 
 namespace Xilium.Crdtp.Client
@@ -121,7 +122,9 @@ namespace Xilium.Crdtp.Client
                     // In this case JsonConverter<Unit> will not be needed at all.
 
                     // params might be null?
-                    var result = JsonSerializer.Deserialize<TResponse>(dispatchable.Data, context.Session.GetJsonSerializerOptions());
+                    //var typeInfo = context.Session.StjTypeInfoResolver.GetTypeInfo<TResponse>();
+                    var result = JsonSerializer.Deserialize<TResponse>(dispatchable.Data,
+                        context.Session.StjTypeInfoResolver.JsonSerializerOptions);
                     if (typeof(TResponse) != typeof(Unit))
                     {
                         Check.That(result != null); // TODO: Better error reporting, nulls are invalid or valid?
@@ -131,7 +134,9 @@ namespace Xilium.Crdtp.Client
                 }
                 else if (dispatchable.DataType == Dispatchable.PayloadType.Error)
                 {
-                    var error = JsonSerializer.Deserialize<CrdtpErrorResponse>(dispatchable.Data, context.Session.GetJsonSerializerOptions());
+                    //var typeInfo = context.Session.StjTypeInfoResolver.GetTypeInfo<CrdtpErrorResponse>();
+                    var error = JsonSerializer.Deserialize<CrdtpErrorResponse>(dispatchable.Data,
+                        context.Session.StjTypeInfoResolver.JsonSerializerOptions);
                     Check.That(error != null);
 
                     _ = _tcs.TrySetResult(new CrdtpResponse<TResponse>(error));

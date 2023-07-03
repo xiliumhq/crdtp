@@ -39,6 +39,8 @@ namespace Xilium.Crdtp.Emitters
                 var propertyType = propertyInfo.Type.GetFullyQualifiedName();
                 if (propertyInfo.IsOptional)
                 {
+                    Context.AddUsedAsOptionalForSerializeContext(propertyInfo.Type);
+
                     propertyType = propertyType + "?";
                 }
 

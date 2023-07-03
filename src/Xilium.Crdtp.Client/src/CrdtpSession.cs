@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Buffers;
@@ -98,13 +100,11 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        // TODO(dmitry.azaraev): (Low) AggresiveInline
-        internal JsonSerializerOptions GetJsonSerializerOptions()
-            => CrdtpClient.JsonSerializerOptionsBuilder.GetOptions();
+        internal StjTypeInfoResolver StjTypeInfoResolver
+            => CrdtpClient.StjTypeInfoResolver;
 
-        public void UseSerializerOptions(StjSerializerOptions options)
-            => CrdtpClient.JsonSerializerOptionsBuilder.Add(options);
-
+        public void UseSerializationContextFactory(StjSerializationContextFactory options)
+            => CrdtpClient.StjTypeInfoResolver.Add(options);
 
         #region Commands
 
@@ -329,7 +329,9 @@ namespace Xilium.Crdtp.Client
                     if (typeof(TRequest) != typeof(Unit))
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);
-                        JsonSerializer.Serialize(encoder, parameters, GetJsonSerializerOptions());
+                        // var typeInfo = StjTypeInfoResolver.GetTypeInfo<TRequest>();
+                        JsonSerializer.Serialize<TRequest>(encoder, parameters,
+                            StjTypeInfoResolver.JsonSerializerOptions);
                     }
 
                     if (_sessionId.Length != 0)

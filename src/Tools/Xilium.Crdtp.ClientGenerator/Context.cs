@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Xilium.Crdtp.Emitters;
@@ -13,6 +14,8 @@ namespace Xilium.Crdtp
         private readonly HashSet<SymbolInfo> _reachableNodes;
 
         private readonly List<StjConverterEmitter> _stjConverterEmitters;
+        private readonly HashSet<TypeInfo> _stjSerializerContextTypes;
+        private readonly HashSet<TypeInfo> _stjSerializerContextOptionalTypes;
 
         // intrinsics
         private readonly AnyTypeInfo _anyTypeInfo;
@@ -33,6 +36,8 @@ namespace Xilium.Crdtp
             _symbolInfos = new();
             _reachableNodes = new();
             _stjConverterEmitters = new();
+            _stjSerializerContextTypes = new();
+            _stjSerializerContextOptionalTypes = new();
 
             _anyTypeInfo = new(this);
             _binaryTypeInfo = new(this);
@@ -148,6 +153,19 @@ namespace Xilium.Crdtp
             _stjConverterEmitters.Add(emitter);
         }
 
+        internal void AddToSerializerContext(TypeInfo typeInfo)
+        {
+            _stjSerializerContextTypes.Add(typeInfo);
+        }
+
+        internal void AddUsedAsOptionalForSerializeContext(TypeInfo typeInfo)
+        {
+            _stjSerializerContextOptionalTypes.Add(typeInfo);
+        }
+
         internal IReadOnlyList<StjConverterEmitter> StjConverterEmitters => _stjConverterEmitters;
+
+        internal IReadOnlySet<TypeInfo> StjSerializerContextTypes => _stjSerializerContextTypes;
+        internal IReadOnlySet<TypeInfo> StjSerializerContextOptionalTypes => _stjSerializerContextOptionalTypes;
     }
 }

@@ -6,9 +6,9 @@ namespace Xilium.Crdtp.Emitters
 {
     internal sealed class ProtocolApiEmitter : CompilationUnitEmitter
     {
-        private readonly StjSerializerOptionsEmitter _stjSerializerOptionsEmitter;
+        private readonly StjSerializationContextFactoryEmitter _stjSerializerOptionsEmitter;
 
-        public ProtocolApiEmitter(Context context, StjSerializerOptionsEmitter stjSerializerOptionsEmitter)
+        public ProtocolApiEmitter(Context context, StjSerializationContextFactoryEmitter stjSerializerOptionsEmitter)
             : base(context)
         {
             _stjSerializerOptionsEmitter = stjSerializerOptionsEmitter;
@@ -38,7 +38,7 @@ namespace Xilium.Crdtp.Emitters
                 if (_stjSerializerOptionsEmitter.ShouldEmit)
                 {
                     ctorMembers.Add(
-                        new CS.Raw($"_session.UseSerializerOptions({WellKnownTypes.ProtocolStjSerializerOptionsTypeInfo.GetFullyQualifiedName()}.Instance);")
+                        new CS.Raw($"_session.UseSerializationContextFactory({WellKnownTypes.ProtocolStjSerializationContextFactoryTypeInfo.GetFullyQualifiedName()}.Instance);")
                     );
                 }
 

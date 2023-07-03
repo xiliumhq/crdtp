@@ -18,13 +18,13 @@ namespace Xilium
     static partial class DebugCheck
     {
         [Conditional("DEBUG"), DebuggerHidden]
-        public static void That(bool value)
+        public static void That([DoesNotReturnIf(false)] bool value)
         {
             if (!value) throw new InvalidOperationException("Check failed.");
         }
 
         [Conditional("DEBUG"), DebuggerHidden]
-        public static void That(bool value, string message)
+        public static void That([DoesNotReturnIf(false)] bool value, string message)
         {
             if (!value) throw new InvalidOperationException(message);
         }
