@@ -44,9 +44,8 @@ namespace Xilium.Crdtp.Client.Dispatching
                 // In this case JsonConverter<Unit> will not be needed at all.
 
                 // params might be null?
-                // var typeInfo = context.Session.StjTypeInfoResolver.GetTypeInfo<TEvent>();
                 var result = JsonSerializer.Deserialize<TEvent>(dispatchable.Data,
-                    context.Session.StjTypeInfoResolver.JsonSerializerOptions);
+                    context.Session.GetJsonSerializerOptions());
                 if (typeof(TEvent) != typeof(Unit))
                 {
                     Check.That(result != null); // TODO: Better error reporting. Not sure if protocol allow null in that case.

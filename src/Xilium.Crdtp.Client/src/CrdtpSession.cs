@@ -100,8 +100,8 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        internal StjTypeInfoResolver StjTypeInfoResolver
-            => CrdtpClient.StjTypeInfoResolver;
+        internal JsonSerializerOptions GetJsonSerializerOptions()
+            => CrdtpClient.StjTypeInfoResolver.JsonSerializerOptions;
 
         public void UseSerializationContextFactory(StjSerializationContextFactory options)
             => CrdtpClient.StjTypeInfoResolver.Add(options);
@@ -329,9 +329,8 @@ namespace Xilium.Crdtp.Client
                     if (typeof(TRequest) != typeof(Unit))
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);
-                        // var typeInfo = StjTypeInfoResolver.GetTypeInfo<TRequest>();
                         JsonSerializer.Serialize<TRequest>(encoder, parameters,
-                            StjTypeInfoResolver.JsonSerializerOptions);
+                            GetJsonSerializerOptions());
                     }
 
                     if (_sessionId.Length != 0)
