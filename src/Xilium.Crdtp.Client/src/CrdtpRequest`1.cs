@@ -123,7 +123,12 @@ namespace Xilium.Crdtp.Client
 
                     // params might be null?
                     var result = JsonSerializer.Deserialize<TResponse>(dispatchable.Data,
-                        context.Session.GetJsonSerializerOptions());
+#if NET7_0_OR_GREATER
+                        context.Session.GetJsonSerializerOptions()
+#else
+                        context.Session.GetStjTypeInfoResolver().GetTypeInfo<TResponse>()
+#endif
+                        );
                     if (typeof(TResponse) != typeof(Unit))
                     {
                         Check.That(result != null); // TODO: Better error reporting, nulls are invalid or valid?
@@ -134,7 +139,12 @@ namespace Xilium.Crdtp.Client
                 else if (dispatchable.DataType == Dispatchable.PayloadType.Error)
                 {
                     var error = JsonSerializer.Deserialize<CrdtpErrorResponse>(dispatchable.Data,
-                        context.Session.GetJsonSerializerOptions());
+#if NET7_0_OR_GREATER
+                        context.Session.GetJsonSerializerOptions()
+#else
+                        context.Session.GetStjTypeInfoResolver().GetTypeInfo<CrdtpErrorResponse>()
+#endif
+                        );
                     Check.That(error != null);
 
                     _ = _tcs.TrySetResult(new CrdtpResponse<TResponse>(error));

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Buffers;
@@ -100,11 +101,16 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
+#if NET7_0_OR_GREATER
         internal JsonSerializerOptions GetJsonSerializerOptions()
             => CrdtpClient.StjTypeInfoResolver.JsonSerializerOptions;
+#else
+        internal StjTypeInfoResolver GetStjTypeInfoResolver()
+            => CrdtpClient.StjTypeInfoResolver;
+#endif
 
-        public void UseSerializationContextFactory(StjSerializationContextFactory options)
-            => CrdtpClient.StjTypeInfoResolver.Add(options);
+        public void UseSerializationContextFactory(StjSerializationContextFactory serializationContextFactory)
+            => CrdtpClient.StjTypeInfoResolver.Add(serializationContextFactory);
 
         #region Commands
 
@@ -330,7 +336,12 @@ namespace Xilium.Crdtp.Client
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);
                         JsonSerializer.Serialize<TRequest>(encoder, parameters,
-                            GetJsonSerializerOptions());
+#if NET7_0_OR_GREATER
+                            GetJsonSerializerOptions()
+#else
+                            CrdtpClient.StjTypeInfoResolver.GetTypeInfo<TRequest>()
+#endif
+                            );
                     }
 
                     if (_sessionId.Length != 0)
@@ -366,7 +377,7 @@ namespace Xilium.Crdtp.Client
             }
         }
 
-        #endregion
+#endregion
 
         #region Events
 

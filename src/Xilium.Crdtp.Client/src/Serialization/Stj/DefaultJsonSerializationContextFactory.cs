@@ -16,6 +16,6 @@ internal sealed class DefaultJsonSerializationContextFactory : StjSerializationC
         };
     }
 
-    protected internal override JsonSerializerContext CreateJsonSerializerContext()
-        => new DefaultJsonSerializerContext();
+    protected internal override JsonSerializerContext CreateJsonSerializerContext(JsonSerializerOptions? options)
+        => new DefaultJsonSerializerContext(options!);
 }

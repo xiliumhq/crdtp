@@ -45,7 +45,12 @@ namespace Xilium.Crdtp.Client.Dispatching
 
                 // params might be null?
                 var result = JsonSerializer.Deserialize<TEvent>(dispatchable.Data,
-                    context.Session.GetJsonSerializerOptions());
+#if NET7_0_OR_GREATER
+                    context.Session.GetJsonSerializerOptions()
+#else
+                    context.Session.GetStjTypeInfoResolver().GetTypeInfo<TEvent>()
+#endif
+                    );
                 if (typeof(TEvent) != typeof(Unit))
                 {
                     Check.That(result != null); // TODO: Better error reporting. Not sure if protocol allow null in that case.

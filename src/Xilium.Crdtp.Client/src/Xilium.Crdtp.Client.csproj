@@ -17,6 +17,11 @@
   <Import Project="..\..\..\Branding.props" />
 
   <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <AssemblyName>$(AssemblyNamePrefix).Crdtp.Client</AssemblyName>
   </PropertyGroup>
 
@@ -76,6 +81,7 @@
     <Compile Include="ObjectPool\PooledObjectPolicy.cs" />
     <Compile Include="Serialization\Cbor\CborHelper.cs" />
     <Compile Include="Serialization\DispatchableParser.cs" />
+    <Compile Include="Serialization\Stj\CombinedJsonSerializerContext.cs" />
     <Compile Include="Serialization\Stj\Converters\DoubleJsonConverter.cs" />
     <Compile Include="Serialization\Stj\Converters\StringJsonConverter.cs" />
     <Compile Include="Serialization\Stj\Converters\UnitJsonConverter.cs" />

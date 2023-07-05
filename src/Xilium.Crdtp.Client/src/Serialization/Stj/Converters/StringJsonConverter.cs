@@ -31,5 +31,11 @@ namespace Xilium.Crdtp.Client.Serialization
         {
             writer.WriteStringValue(value);
         }
+
+        public override string ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            DebugCheck.That(reader.TokenType == JsonTokenType.PropertyName);
+            return reader.GetString()!;
+        }
     }
 }

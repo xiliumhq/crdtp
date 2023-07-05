@@ -6,5 +6,5 @@ namespace Xilium.Crdtp.Client.Serialization;
 public abstract class StjSerializationContextFactory
 {
     protected internal abstract JsonConverter[] GetJsonConverters();
-    protected internal abstract JsonSerializerContext CreateJsonSerializerContext();
+    protected internal abstract JsonSerializerContext CreateJsonSerializerContext(JsonSerializerOptions? options);
 }

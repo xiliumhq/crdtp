@@ -47,11 +47,14 @@ namespace Xilium.Crdtp.Emitters
             {
                 var methodBody = new List<CS.SyntaxObject>()
                 {
-                    new CS.Raw($"return new {WellKnownTypes.ProtocolStjSerializerContext.GetFullyQualifiedName()}();"),
+                    new CS.Raw($"return new {WellKnownTypes.ProtocolStjSerializerContext.GetFullyQualifiedName()}(options);"),
                 };
                 typeMembers.Add(new CS.MethodDeclaration(
                     name: "CreateJsonSerializerContext",
-                    parameters: null,
+                    parameters: new[]
+                    {
+                        new CS.Parameter("options", WellKnownTypes.JsonSerializerOptions.GetFullyQualifiedName() + "?")
+                    },
                     returnParameter: new CS.Parameter(null!, WellKnownTypes.JsonSerializerContext.GetFullyQualifiedName()),
                     modifiers: CS.CSharpModifiers.Protected | CS.CSharpModifiers.Override,
                     members: methodBody
