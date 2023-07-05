@@ -13,6 +13,7 @@ namespace Xilium.Crdtp
         private readonly HashSet<SymbolInfo> _reachableNodes;
 
         private readonly List<StjConverterEmitter> _stjConverterEmitters;
+        private readonly HashSet<TypeInfo> _stjConvertibleTypes;
 
         // intrinsics
         private readonly AnyTypeInfo _anyTypeInfo;
@@ -33,6 +34,7 @@ namespace Xilium.Crdtp
             _symbolInfos = new();
             _reachableNodes = new();
             _stjConverterEmitters = new();
+            _stjConvertibleTypes = new();
 
             _anyTypeInfo = new(this);
             _binaryTypeInfo = new(this);
@@ -143,10 +145,14 @@ namespace Xilium.Crdtp
             return _reachableNodes.OfType<TSymbolInfo>();
         }
 
-        internal void AddStjConverterEmitter(StjConverterEmitter emitter)
+        internal void AddStjConverterEmitter(TypeInfo typeInfo, StjConverterEmitter emitter)
         {
+            _stjConvertibleTypes.Add(typeInfo);
             _stjConverterEmitters.Add(emitter);
         }
+
+        internal bool IsStjConvertible(TypeInfo typeInfo)
+            => _stjConvertibleTypes.Contains(typeInfo);
 
         internal IReadOnlyList<StjConverterEmitter> StjConverterEmitters => _stjConverterEmitters;
     }

@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+    <!--
+    <IsAotCompatible>true</IsAotCompatible>
+    -->
+    <DefineConstants>$(DefineConstants);XI_CRDTP_TRIMMABLE_DYNAMIC</DefineConstants>
+
     <XiCrdtpUseInternalApiInterfaces Condition=" '$(Configuration)' == 'Debug' ">true</XiCrdtpUseInternalApiInterfaces>
     <XiCrdtpUseInternalApiInterfaces Condition=" '$(Configuration)' != 'Debug' ">false</XiCrdtpUseInternalApiInterfaces>
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xilium.Crdtp.Model;
 using CS = Xilium.Chromium.DevTools.Syntax;
@@ -24,14 +25,15 @@ namespace Xilium.Crdtp.Emitters
             {
                 "System",
                 "System.Collections.Generic",
+                "System.Diagnostics.CodeAnalysis",
                 // "System.Threading"
                 // "System.Threading.Tasks"
             };
 
             var typeAttributes = Context.CSharp.CreateAttributeList(_typeInfo, usingNamespaces);
 
-            var typeMembers = new List<CS.SyntaxObject>();
-
+            var properties = new List<CS.SyntaxObject>();
+            HashSet<string>? dynamicDependencyTypes = null;
             // TODO: Create Default .ctor but only if needed. (In order if more ctors will be added).
 
             foreach (var propertyInfo in _typeInfo.Properties)
@@ -42,6 +44,11 @@ namespace Xilium.Crdtp.Emitters
                     propertyType = propertyType + "?";
                 }
 
+                if (Context.Options.Stj.Trimmable)
+                {
+                    AddDynamicDependencyProperty(ref dynamicDependencyTypes, propertyInfo);
+                }
+
                 var propertyAttributes = Context.CSharp.CreateAttributeList(propertyInfo, usingNamespaces);
 
                 var propertyName = propertyInfo.Name;
@@ -50,14 +57,18 @@ namespace Xilium.Crdtp.Emitters
                 // then emit JsonPropertyName attribute.
                 if (Context.Options.Stj.Enabled)
                 {
-                    if (Context.Options.Stj.CamelCaseNamingConvention)
+                    bool emitJsonPropertyName = true;
+
+                    if (!Context.Options.Stj.Obfuscation)
                     {
-                        propertyName = System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(propertyName);
+                        if (Context.Options.Stj.CamelCaseNamingConvention)
+                        {
+                            propertyName = System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(propertyName);
+                        }
+                        emitJsonPropertyName = propertyName != propertyInfo.ProtocolName;
                     }
 
-                    var useJsonPropertyName = propertyName != propertyInfo.ProtocolName;
-
-                    if (useJsonPropertyName)
+                    if (emitJsonPropertyName)
                     {
                         propertyAttributes.Add(new CS.AttributeDecl("JsonPropertyName", new string[] {
                             Context.CSharp.CreateString(propertyInfo.ProtocolName)
@@ -73,10 +84,46 @@ namespace Xilium.Crdtp.Emitters
                     attributes: propertyAttributes,
                     xmlDocumentation: Context.CSharp.CreateDocumentation(propertyInfo)
                     );
-                typeMembers.Add(propertyDeclaration);
+                properties.Add(propertyDeclaration);
+            }
+
+            CS.Constructor? ctor = null;
+            if (Context.Options.Stj.Trimmable)
+            {
+                var ctorAttributes = new List<CS.AttributeDecl>();
+                if (dynamicDependencyTypes != null)
+                {
+                    foreach (var typeName in dynamicDependencyTypes.OrderBy(x => x))
+                    {
+                        ctorAttributes.Add(new CS.AttributeDecl(
+                            name: "DynamicDependency",
+                            parameters: new[]
+                            {
+                            "DynamicallyAccessedMemberTypes.PublicConstructors "
+                            + "| DynamicallyAccessedMemberTypes.PublicProperties",
+                            "typeof(" + typeName + ")"
+                            }));
+                    }
+                }
+
+                if (ctorAttributes.Count > 0)
+                {
+                    ctor = new CS.Constructor(_typeInfo.Name,
+                        parameters: Array.Empty<CS.Parameter>(),
+                        modifiers: CS.CSharpModifiers.Public,
+                        attributes: ctorAttributes,
+                        xmlDocumentation: null,
+                        members: null);
+                }
             }
 
 
+            var typeMembers = new List<CS.SyntaxObject>();
+            typeMembers.AddRange(properties);
+            if (ctor != null)
+            {
+                typeMembers.Add(ctor);
+            }
 
             var typeDeclaration = new CS.ClassDeclaration(
                 name: _typeInfo.Name,
@@ -109,6 +156,39 @@ namespace Xilium.Crdtp.Emitters
                 Category = "Compile",
                 Content = Context.CSharp.GetContent(unit),
             });
+        }
+
+        private void AddDynamicDependencyType(ref HashSet<string>? dynamicDependencyTypes,
+            TypeInfo typeInfo, bool optional)
+        {
+            if (Context.IsStjConvertible(typeInfo))
+            {
+                // Not needed to add, because are convertors are explicitly registered.
+                return;
+            }
+            else if (typeInfo is ArrayTypeInfo arrayTypeInfo)
+            {
+                AddDynamicDependencyType(ref dynamicDependencyTypes, arrayTypeInfo.ElementType, false);
+            }
+            else if (typeInfo is AnyTypeInfo)
+            {
+                return;
+            }
+            else if (typeInfo is IntrinsicTypeInfo)
+            {
+                return;
+            }
+
+            // shouldAdd
+            dynamicDependencyTypes ??= new HashSet<string>();
+            dynamicDependencyTypes.Add(typeInfo.GetFullyQualifiedName());
+        }
+
+        private void AddDynamicDependencyProperty(ref HashSet<string>? dynamicDependencyTypes, PropertyInfo propertyInfo)
+        {
+            AddDynamicDependencyType(ref dynamicDependencyTypes, propertyInfo.Type, propertyInfo.IsOptional);
+            //if (propertyType == "System.Collections.Generic.List<ZennoLab.Browser.DevTools.Protocol.Accessibility.AXNodeId>?")
+            //    ;
         }
     }
 }

@@ -121,6 +121,51 @@ namespace Xilium.Crdtp
             // Pass: Emitting Types
             var stjSerializerOptionsEmitter = new StjSerializerOptionsEmitter(context);
 
+            // Pass: Collect Convertors to emit
+            foreach (var typeInfo in context.GetReachableNodes<TypeInfo>())
+            {
+                // Console.WriteLine($"Emit: Type ({typeInfo.GetType().Name}): {typeInfo.Name}");
+                switch (typeInfo)
+                {
+                    case ObjectTypeInfo x:
+                        {
+                            var stjConverterEmitter = x.GetStjConverterEmitter();
+                            if (stjConverterEmitter != null)
+                            {
+                                context.AddStjConverterEmitter(x, stjConverterEmitter);
+                            }
+                        }
+                        break;
+
+                    case EnumTypeInfo x:
+                        {
+                            var stjConverterEmitter = x.GetStjConverterEmitter();
+                            if (stjConverterEmitter != null)
+                            {
+                                context.AddStjConverterEmitter(x, stjConverterEmitter);
+                            }
+                        }
+                        break;
+
+                    case AliasTypeInfo x:
+                        {
+                            var stjConverterEmitter = x.GetStjConverterEmitter();
+                            if (stjConverterEmitter != null)
+                            {
+                                context.AddStjConverterEmitter(x, stjConverterEmitter);
+                            }
+                        }
+                        break;
+
+                    case IntrinsicTypeInfo x:
+                        // no-op
+                        break;
+
+                    default: throw Error.NotImplemented("Invalid type info type: {0}", typeInfo.GetType().Name);
+                }
+            }
+
+            // Pass: Emitting Types
             foreach (var typeInfo in context.GetReachableNodes<TypeInfo>())
             {
                 // Console.WriteLine($"Emit: Type ({typeInfo.GetType().Name}): {typeInfo.Name}");
@@ -133,12 +178,6 @@ namespace Xilium.Crdtp
                             {
                                 emitter.Emit();
                             }
-
-                            var stjConverterEmitter = x.GetStjConverterEmitter();
-                            if (stjConverterEmitter != null)
-                            {
-                                context.AddStjConverterEmitter(stjConverterEmitter);
-                            }
                         }
                         break;
 
@@ -149,12 +188,6 @@ namespace Xilium.Crdtp
                             {
                                 emitter.Emit();
                             }
-
-                            var stjConverterEmitter = x.GetStjConverterEmitter();
-                            if (stjConverterEmitter != null)
-                            {
-                                context.AddStjConverterEmitter(stjConverterEmitter);
-                            }
                         }
                         break;
 
@@ -164,12 +197,6 @@ namespace Xilium.Crdtp
                             if (emitter != null)
                             {
                                 emitter.Emit();
-                            }
-
-                            var stjConverterEmitter = x.GetStjConverterEmitter();
-                            if (stjConverterEmitter != null)
-                            {
-                                context.AddStjConverterEmitter(stjConverterEmitter);
                             }
                         }
                         break;

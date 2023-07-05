@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading;
 using Xilium.Crdtp.Core;
@@ -7,7 +8,11 @@ using Xilium.Threading;
 namespace Xilium.Crdtp.Client.Dispatching
 {
     // TODO(dmitry.azaraev): EventHandlerDispatcher might share common deserialization logic.
-    internal sealed class EventHandlerDispatcher<TEvent> : CrdtpDispatcher
+    internal sealed class EventHandlerDispatcher<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+    TEvent> : CrdtpDispatcher
     {
         // private readonly CrdtpSession _session;
         private readonly EventHandler<TEvent> _handler;
@@ -32,6 +37,10 @@ namespace Xilium.Crdtp.Client.Dispatching
             };
         }
 
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
+            Justification = "TEvent type is preserved by the DynamicallyAccessedMembers.")]
+#endif
         public override void Dispatch(CrdtpDispatchContext context, Dispatchable dispatchable)
         {
             DebugCheck.That(!dispatchable.CallId.HasValue && !string.IsNullOrEmpty(dispatchable.Method));

@@ -5,6 +5,7 @@
 #endif
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,11 @@ namespace Xilium.Crdtp.Client
     // TODO: Eventually it should be CrdtpRequestCompletionSource<TResult> which
     // derived from TaskCompletionSource<TResponse>, ICrdtpRequest
     // This would give less memory allocations.
-    internal sealed class CrdtpRequest<TResponse> : CrdtpRequest
+    internal sealed class CrdtpRequest<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+    TResponse> : CrdtpRequest
     {
         // private static readonly Action<object?> s_cancelRequestAction = OnCancel;
         private readonly int _callId;
@@ -97,6 +102,10 @@ namespace Xilium.Crdtp.Client
             }
         }
 
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
+            Justification = "TResponse type is preserved by the DynamicallyAccessedMembers.")]
+#endif
         public override void Dispatch(CrdtpDispatchContext context, Dispatchable dispatchable)
         {
             // At this moment we are sure what response is dispatched, and we must set one
@@ -131,7 +140,7 @@ namespace Xilium.Crdtp.Client
                 }
                 else if (dispatchable.DataType == Dispatchable.PayloadType.Error)
                 {
-                    var error = JsonSerializer.Deserialize<CrdtpErrorResponse>(dispatchable.Data, context.Session.GetJsonSerializerOptions());
+                    var error = DeserializeError(dispatchable.Data, context.Session.GetJsonSerializerOptions());
                     Check.That(error != null);
 
                     _ = _tcs.TrySetResult(new CrdtpResponse<TResponse>(error));
@@ -145,5 +154,13 @@ namespace Xilium.Crdtp.Client
         }
 
         public Task<CrdtpResponse<TResponse>> Task => _tcs.Task;
+
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [DynamicDependency(Compat.ForDeserialization, typeof(CrdtpErrorResponse))]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
+            Justification = "The type is preserved by the DynamicDependency.")]
+#endif
+        private static CrdtpErrorResponse? DeserializeError(ReadOnlySpan<byte> utf8Json, JsonSerializerOptions options)
+            => JsonSerializer.Deserialize<CrdtpErrorResponse>(utf8Json, options);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Xilium.Crdtp.Client
 {
@@ -11,6 +12,15 @@ namespace Xilium.Crdtp.Client
             self.Add(key, value);
             return true;
         }
+#endif
+
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        internal const DynamicallyAccessedMemberTypes ForDeserialization
+            = DynamicallyAccessedMemberTypes.PublicConstructors
+            | DynamicallyAccessedMemberTypes.PublicProperties;
+
+        internal const DynamicallyAccessedMemberTypes ForSerialization
+            = DynamicallyAccessedMemberTypes.PublicProperties;
 #endif
     }
 }

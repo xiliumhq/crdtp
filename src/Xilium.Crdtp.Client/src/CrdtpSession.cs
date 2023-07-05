@@ -108,7 +108,11 @@ namespace Xilium.Crdtp.Client
 
         #region Commands
 
-        public async Task ExecuteCommandAsync<TRequest>(
+        public async Task ExecuteCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest>(
             string method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -118,7 +122,11 @@ namespace Xilium.Crdtp.Client
             _ = response.GetResult();
         }
 
-        public async Task ExecuteCommandAsync<TRequest>(
+        public async Task ExecuteCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest>(
             JsonEncodedText method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -128,7 +136,15 @@ namespace Xilium.Crdtp.Client
             _ = response.GetResult();
         }
 
-        public async Task<TResponse> ExecuteCommandAsync<TRequest, TResponse>(
+        public async Task<TResponse> ExecuteCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest,
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TResponse>(
             string method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -138,7 +154,15 @@ namespace Xilium.Crdtp.Client
             return response.GetResult();
         }
 
-        public async Task<TResponse> ExecuteCommandAsync<TRequest, TResponse>(
+        public async Task<TResponse> ExecuteCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest,
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TResponse>(
             JsonEncodedText method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -154,7 +178,11 @@ namespace Xilium.Crdtp.Client
         // This method is not necessary might be accessible, if client is built without Json/Dynamic support.
         // [DynamicallyAccessedMembers(MembersAccessedOnWrite)] => public fields & public properties
 
-        public async Task<CrdtpResponse> SendCommandAsync<TRequest>(string method,
+        public async Task<CrdtpResponse> SendCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest>(string method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
         {
@@ -163,7 +191,11 @@ namespace Xilium.Crdtp.Client
             return new CrdtpResponse(response);
         }
 
-        public async Task<CrdtpResponse> SendCommandAsync<TRequest>(JsonEncodedText method,
+        public async Task<CrdtpResponse> SendCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest>(JsonEncodedText method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
         {
@@ -172,7 +204,15 @@ namespace Xilium.Crdtp.Client
             return new CrdtpResponse(response);
         }
 
-        public Task<CrdtpResponse<TResponse>> SendCommandAsync<TRequest, TResponse>(
+        public Task<CrdtpResponse<TResponse>> SendCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest,
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TResponse>(
             string method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -184,7 +224,15 @@ namespace Xilium.Crdtp.Client
                 cancellationToken);
         }
 
-        public Task<CrdtpResponse<TResponse>> SendCommandAsync<TRequest, TResponse>(
+        public Task<CrdtpResponse<TResponse>> SendCommandAsync<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest,
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TResponse>(
             JsonEncodedText method,
             TRequest parameters,
             CancellationToken cancellationToken = default)
@@ -272,7 +320,11 @@ namespace Xilium.Crdtp.Client
             }
         }
 
-        private async Task<CrdtpResponse<TResponse>> SendCommandAsyncInternal<TResponse>(
+        private async Task<CrdtpResponse<TResponse>> SendCommandAsyncInternal<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TResponse>(
             ValueTask sendTask,
             CrdtpArrayBufferWriter<byte> bufferWriter,
             CrdtpRequest<TResponse> request)
@@ -303,7 +355,16 @@ namespace Xilium.Crdtp.Client
             return await request.Task.ConfigureAwait(false);
         }
 
-        private CrdtpArrayBufferWriter<byte> SerializeRequest<TRequest>(int callId, JsonEncodedText method, TRequest parameters)
+
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026:RequiresUnreferencedCode",
+            Justification = "TRequest type is preserved by the DynamicallyAccessedMembers.")]
+#endif
+        private CrdtpArrayBufferWriter<byte> SerializeRequest<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForSerialization)]
+#endif
+        TRequest>(int callId, JsonEncodedText method, TRequest parameters)
         {
             var bufferWriter = Pools.BufferWriterPool.Rent();
             var shouldReturnBufferWriter = true;
@@ -329,7 +390,7 @@ namespace Xilium.Crdtp.Client
                     if (typeof(TRequest) != typeof(Unit))
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);
-                        JsonSerializer.Serialize(encoder, parameters, GetJsonSerializerOptions());
+                        JsonSerializer.Serialize<TRequest>(encoder, parameters, GetJsonSerializerOptions());
                     }
 
                     if (_sessionId.Length != 0)
@@ -397,7 +458,11 @@ namespace Xilium.Crdtp.Client
         private void RemoveEventDispatcher(string name, CrdtpDispatcher dispatcher)
             => throw Error.NotImplemented();
 
-        public void AddEventHandler<TEvent>(string name,
+        public void AddEventHandler<
+#if XI_CRDTP_TRIMMABLE_DYNAMIC
+            [DynamicallyAccessedMembers(Compat.ForDeserialization)]
+#endif
+        TEvent>(string name,
             EventHandler<TEvent> handler,
             object? sender = default,
             TaskRunner? taskRunner = default)
