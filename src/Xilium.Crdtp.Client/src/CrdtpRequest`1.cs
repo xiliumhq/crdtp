@@ -38,7 +38,10 @@ namespace Xilium.Crdtp.Client
         public CrdtpRequest(CrdtpSession session, int callId)
         {
             _callId = callId;
-            _tcs = new TaskCompletionSource<CrdtpResponse<TResponse>>(session, TaskCreationOptions.RunContinuationsAsynchronously);
+
+            var creationOptions = session.TaskRunner == null ?
+                TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None;
+            _tcs = new TaskCompletionSource<CrdtpResponse<TResponse>>(session, creationOptions);
         }
 
         public override CrdtpSession Session => (CrdtpSession)_tcs.Task.AsyncState!;
@@ -136,20 +139,49 @@ namespace Xilium.Crdtp.Client
                         Check.That(result != null); // TODO: Better error reporting, nulls are invalid or valid?
                     }
 
-                    _ = _tcs.TrySetResult(new CrdtpResponse<TResponse>(result!));
+                    var response = new CrdtpResponse<TResponse>(result!);
+                    var taskRunner = Session.TaskRunner;
+                    if (taskRunner != null)
+                    {
+                        // TODO: This should be optimized, to avoid closure allocation
+                        taskRunner.PostTask(() => { _ = _tcs.TrySetResult(response); });
+                    }
+                    else
+                    {
+                        _ = _tcs.TrySetResult(response);
+                    }
                 }
                 else if (dispatchable.DataType == Dispatchable.PayloadType.Error)
                 {
                     var error = DeserializeError(dispatchable.Data, context.Session.GetJsonSerializerOptions());
                     Check.That(error != null);
 
-                    _ = _tcs.TrySetResult(new CrdtpResponse<TResponse>(error));
+                    var response = new CrdtpResponse<TResponse>(error);
+                    var taskRunner = Session.TaskRunner;
+                    if (taskRunner != null)
+                    {
+                        // TODO: This should be optimized, to avoid closure allocation
+                        taskRunner.PostTask(() => { _ = _tcs.TrySetResult(response); });
+                    }
+                    else
+                    {
+                        _ = _tcs.TrySetResult(response);
+                    }
                 }
                 else throw Error.InvalidOperation("Invalid data type.");
             }
             catch (Exception ex)
             {
-                _tcs.TrySetException(ex);
+                var taskRunner = Session.TaskRunner;
+                if (taskRunner != null)
+                {
+                    // TODO: This should be optimized, to avoid closure allocation
+                    taskRunner.PostTask(() => { _ = _tcs.TrySetException(ex); });
+                }
+                else
+                {
+                    _ = _tcs.TrySetException(ex);
+                }
             }
         }
 
