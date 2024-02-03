@@ -1,7 +1,4 @@
 <Project>
   <Import Project="..\Directory.Build.props" />
-  <PropertyGroup>
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
   <Import Project="..\..\Tools.props" />
 </Project>
