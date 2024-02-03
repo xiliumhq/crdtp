@@ -18,6 +18,8 @@ namespace Xilium.Crdtp.Tools
         private string? CommandResponseAnonymousTypePrefix { get; }
         private string? EventAnonymousTypePrefix { get; }
 
+        private bool Verbose { get; }
+
         public GenerateCommand(
             IReadOnlyList<string> input,
             string outputPath,
@@ -29,7 +31,8 @@ namespace Xilium.Crdtp.Tools
             string? eventTypeSuffix,
             string? commandRequestAnonymousTypePrefix,
             string? commandResponseAnonymousTypePrefix,
-            string? eventAnonymousTypePrefix)
+            string? eventAnonymousTypePrefix,
+            bool verbose)
         {
             InputPaths = input;
             OutputPath = outputPath;
@@ -49,6 +52,8 @@ namespace Xilium.Crdtp.Tools
             CommandRequestAnonymousTypePrefix = string.IsNullOrEmpty(commandRequestAnonymousTypePrefix) ? null : commandRequestAnonymousTypePrefix;
             CommandResponseAnonymousTypePrefix = string.IsNullOrEmpty(commandResponseAnonymousTypePrefix) ? null : commandResponseAnonymousTypePrefix;
             EventAnonymousTypePrefix = string.IsNullOrEmpty(eventAnonymousTypePrefix) ? null : eventAnonymousTypePrefix;
+
+            Verbose = verbose;
         }
 
         public int Execute()
@@ -60,6 +65,8 @@ namespace Xilium.Crdtp.Tools
 
             var options = new ClientGeneratorOptions
             {
+                Verbose = Verbose,
+
                 InputFiles = InputPaths,
                 OutputPath = OutputPath,
 

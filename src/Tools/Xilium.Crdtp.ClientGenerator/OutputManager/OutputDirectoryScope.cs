@@ -9,11 +9,13 @@ namespace Xilium.Crdtp
         private readonly string _path;
         private readonly string _physicalPath;
         private readonly List<OutputItem> _items = new();
+        private readonly bool _verbose;
 
-        public OutputDirectoryScope(string path)
+        public OutputDirectoryScope(string path, bool verbose)
         {
             _path = path;
             _physicalPath = IO.Path.GetFullPath(path);
+            _verbose = verbose;
         }
 
         public override string PhysicalPath => _physicalPath;
@@ -33,7 +35,10 @@ namespace Xilium.Crdtp
 
         public override int Commit()
         {
-            Console.WriteLine($"{nameof(OutputScope)}::{nameof(Commit)}");
+            if (_verbose)
+            {
+                Console.WriteLine($"{nameof(OutputScope)}::{nameof(Commit)}");
+            }
 
             var allFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -74,7 +79,10 @@ namespace Xilium.Crdtp
                     if (updateItem)
                     {
                         IO.File.WriteAllText(itemPhysicalPath, item.Content);
-                        Console.WriteLine("Written: {0}", itemPhysicalPath);
+                        if (_verbose)
+                        {
+                            Console.WriteLine("Written: {0}", itemPhysicalPath);
+                        }
                         itemsUpdated++;
                     }
                 }

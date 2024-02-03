@@ -29,7 +29,7 @@ namespace Xilium.Crdtp
 
             var context = new Context
             {
-                OutputScope = new OutputDirectoryScope(_options.OutputPath),
+                OutputScope = new OutputDirectoryScope(_options.OutputPath, _options.Verbose),
                 Options = _options,
             };
             context.NamingPolicy = new DefaultNamingPolicy(context);

@@ -6,6 +6,8 @@ namespace Xilium.Crdtp
 {
     public sealed class ClientGeneratorOptions
     {
+        public bool Verbose { get; set; }
+
         public IReadOnlyList<string> InputFiles { get; set; } = default!;
         public string OutputPath { get; set; } = default!;
 
