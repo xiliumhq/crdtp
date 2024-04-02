@@ -8,6 +8,7 @@ namespace Xilium.Crdtp.Client.Serialization;
 [JsonSerializable(typeof(CrdtpErrorResponse))]
 [JsonSerializable(typeof(Unit))]
 // Commonly used collections with protocol "any" type.
+[JsonSerializable(typeof(float))]
 [JsonSerializable(typeof(Dictionary<string, object>))]
 [JsonSerializable(typeof(List<object>))]
 [JsonSourceGenerationOptions(
