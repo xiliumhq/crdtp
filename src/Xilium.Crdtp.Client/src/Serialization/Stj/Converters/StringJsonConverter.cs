@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -31,5 +32,20 @@ namespace Xilium.Crdtp.Client.Serialization
         {
             writer.WriteStringValue(value);
         }
+
+        public override string ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (typeToConvert != typeof(string))
+                throw new JsonException("Only string keys supported.");
+
+            if (reader.TokenType != JsonTokenType.PropertyName)
+                throw new JsonException("PropertyName token expected.");
+
+            // Expect valid string.
+            return reader.GetString()!;
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] string value, JsonSerializerOptions options)
+            => writer.WritePropertyName(value);
     }
 }
