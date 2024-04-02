@@ -98,13 +98,11 @@ namespace Xilium.Crdtp.Client
 
         #endregion
 
-        // TODO(dmitry.azaraev): (Low) AggresiveInline
-        internal JsonSerializerOptions GetJsonSerializerOptions()
-            => CrdtpClient.JsonSerializerOptionsBuilder.GetOptions();
+        internal StjTypeInfoResolver StjTypeInfoResolver
+            => CrdtpClient.StjTypeInfoResolver;
 
-        public void UseSerializerOptions(StjSerializerOptions options)
-            => CrdtpClient.JsonSerializerOptionsBuilder.Add(options);
-
+        public void UseSerializationContextFactory(StjSerializationContextFactory options)
+            => CrdtpClient.StjTypeInfoResolver.Add(options);
 
         #region Commands
 
@@ -390,7 +388,7 @@ namespace Xilium.Crdtp.Client
                     if (typeof(TRequest) != typeof(Unit))
                     {
                         encoder.WritePropertyName(StjEncodedProperties.Params);
-                        JsonSerializer.Serialize<TRequest>(encoder, parameters, GetJsonSerializerOptions());
+                        JsonSerializer.Serialize<TRequest>(encoder, parameters, StjTypeInfoResolver.JsonSerializerOptions);
                     }
 
                     if (_sessionId.Length != 0)

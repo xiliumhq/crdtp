@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -17,8 +18,12 @@ namespace Xilium.Crdtp.Emitters
         {
             var compileItems = Context.OutputScope.Items.Where(x => x.Category == "Compile");
 
+            // Emit warning as error when STJ generator hit in conflicting name.
+            var propertyGroup = new XElement("PropertyGroup",
+                new XElement("WarningsAsErrors", "$(WarningsAsErrors);SYSLIB1031"));
+
             var compileItemGroup = new XElement("ItemGroup", GetCompileItems(compileItems));
-            var document = new XDocument(new XElement("Project", compileItemGroup));
+            var document = new XDocument(new XElement("Project", propertyGroup, compileItemGroup));
 
             var sb = new StringBuilder();
             using (var sw = new IO.StringWriter(sb))

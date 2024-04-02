@@ -8,24 +8,30 @@ namespace Xilium.Crdtp.Emitters
         public Context Context { get; }
 
         // External
-        public WellKnownTypeInfo StjSerializerOptionsTypeInfo { get; }
+        public WellKnownTypeInfo StjSerializationContextFactoryTypeInfo { get; }
         public WellKnownTypeInfo JsonConverterTypeInfo { get; }
+        public WellKnownTypeInfo JsonSerializerContext { get; }
 
         // Generated
         public WellKnownTypeInfo ProtocolApiTypeInfo { get; }
-        public WellKnownTypeInfo ProtocolStjSerializerOptionsTypeInfo { get; }
+        public WellKnownTypeInfo ProtocolStjSerializationContextFactoryTypeInfo { get; }
+        public WellKnownTypeInfo ProtocolStjSerializerContext { get; }
 
         public WellKnownTypes(Context context)
         {
             Context = context;
 
             // External
-            StjSerializerOptionsTypeInfo = new WellKnownTypeInfo(context,
-                "StjSerializerOptions",
+            StjSerializationContextFactoryTypeInfo = new WellKnownTypeInfo(context,
+                "StjSerializationContextFactory",
                 "Xilium.Crdtp.Client.Serialization");
 
             JsonConverterTypeInfo = new WellKnownTypeInfo(context,
                 "JsonConverter",
+                "System.Text.Json.Serialization");
+
+            JsonSerializerContext = new WellKnownTypeInfo(context,
+                "JsonSerializerContext",
                 "System.Text.Json.Serialization");
 
             // Generated
@@ -33,10 +39,13 @@ namespace Xilium.Crdtp.Emitters
                 Context.Options.ProtocolApiTypeName,
                 Context.Options.Namespace);
 
-            ProtocolStjSerializerOptionsTypeInfo = new WellKnownTypeInfo(context,
-                "ProtocolStjSerializerOptions",
-                Context.NamingPolicy.GetNamespaceName(null as string)
-                );
+            ProtocolStjSerializationContextFactoryTypeInfo = new WellKnownTypeInfo(context,
+                "ProtocolStjSerializationContextFactory",
+                Context.NamingPolicy.GetNamespaceName(null as string));
+
+            ProtocolStjSerializerContext = new WellKnownTypeInfo(context,
+                "ProtocolStjSerializerContext",
+                Context.NamingPolicy.GetNamespaceName(null as string));
         }
 
         public WellKnownOf1TypeInfo GetIEnumerableOf(TypeInfo typeInfo)

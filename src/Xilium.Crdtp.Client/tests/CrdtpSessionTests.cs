@@ -83,8 +83,8 @@ namespace Xilium.Crdtp.Client.Tests
         public void UseSerializerOptions_Detached_Ok()
         {
             var session = CreateSession();
-            Assert.Throws<ArgumentNullException>(() => session.UseSerializerOptions(null!));
-            session.UseSerializerOptions(TestStjSerializerOptions.Instance); // TODO: Document behavior, e.g. serializers must be registrable without being attached.
+            Assert.Throws<ArgumentNullException>(() => session.UseSerializationContextFactory(null!));
+            session.UseSerializationContextFactory(TestStjSerializationContextFactory.Instance); // TODO: Document behavior, e.g. serializers must be registrable without being attached.
         }
 
         // TODO: Add tests for overloads
@@ -143,13 +143,16 @@ namespace Xilium.Crdtp.Client.Tests
         private sealed class EmptyResponse { }
         private sealed class EmptyEvent { }
 
-        private sealed class TestStjSerializerOptions : StjSerializerOptions
+        private sealed class TestStjSerializationContextFactory : StjSerializationContextFactory
         {
-            public static readonly TestStjSerializerOptions Instance = new();
+            public static readonly TestStjSerializationContextFactory Instance = new();
 
-            private TestStjSerializerOptions() { }
+            private TestStjSerializationContextFactory() { }
 
-            protected override ICollection<JsonConverter> GetConvertersCore()
+            protected override JsonSerializerContext? CreateJsonSerializerContext()
+                => null;
+
+            protected override JsonConverter[] GetJsonConverters()
                 => Array.Empty<JsonConverter>();
         }
     }

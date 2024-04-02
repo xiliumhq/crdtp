@@ -133,7 +133,7 @@ namespace Xilium.Crdtp.Client
                     // In this case JsonConverter<Unit> will not be needed at all.
 
                     // params might be null?
-                    var result = JsonSerializer.Deserialize<TResponse>(dispatchable.Data, context.Session.GetJsonSerializerOptions());
+                    var result = JsonSerializer.Deserialize<TResponse>(dispatchable.Data, context.Session.StjTypeInfoResolver.JsonSerializerOptions);
                     if (typeof(TResponse) != typeof(Unit))
                     {
                         Check.That(result != null); // TODO: Better error reporting, nulls are invalid or valid?
@@ -153,7 +153,7 @@ namespace Xilium.Crdtp.Client
                 }
                 else if (dispatchable.DataType == Dispatchable.PayloadType.Error)
                 {
-                    var error = DeserializeError(dispatchable.Data, context.Session.GetJsonSerializerOptions());
+                    var error = DeserializeError(dispatchable.Data, context.Session.StjTypeInfoResolver.JsonSerializerOptions);
                     Check.That(error != null);
 
                     var response = new CrdtpResponse<TResponse>(error);
