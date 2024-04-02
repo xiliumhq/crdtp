@@ -45,10 +45,18 @@ namespace Xilium.Crdtp.Emitters
 
             // CreateJsonSerializerContext
             {
-                var methodBody = new List<CS.SyntaxObject>()
+                var methodBody = new List<CS.SyntaxObject>();
+                if (Context.Options.Stj.SerializationContext)
                 {
-                    new CS.Raw("return null;"),
-                    // new CS.Raw($"return new {WellKnownTypes.ProtocolStjSerializerContext.GetFullyQualifiedName()}();"),
+                    methodBody.Add(
+                        new CS.Raw($"return new {WellKnownTypes.ProtocolStjSerializerContext.GetFullyQualifiedName()}();")
+                        );
+                }
+                else
+                {
+                    methodBody.Add(
+                        new CS.Raw("return null;")
+                        );
                 };
                 typeMembers.Add(new CS.MethodDeclaration(
                     name: "CreateJsonSerializerContext",

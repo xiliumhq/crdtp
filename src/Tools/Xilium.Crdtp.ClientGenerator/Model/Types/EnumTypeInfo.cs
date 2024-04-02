@@ -60,6 +60,8 @@ namespace Xilium.Crdtp.Model
 
         public ImmutableArray<EnumMemberInfo> Members => _members;
 
+        public override bool IsValueType => true;
+
         internal Emitter? GetEmitter()
         {
             return new EnumTypeEmitter(Context, this);

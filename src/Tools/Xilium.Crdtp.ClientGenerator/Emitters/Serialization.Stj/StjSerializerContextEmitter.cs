@@ -26,12 +26,14 @@ namespace Xilium.Crdtp.Emitters
 
         protected override List<CS.SyntaxObject> GetNamespaceContent()
         {
+            if (!Context.Options.Stj.SerializationContext)
+                return [];
+
             UsingNamespaces.Add("System");
             UsingNamespaces.Add("System.Text.Json.Serialization");
 
             var declarations = new List<CS.SyntaxObject>();
 
-            /*
             var typeMembers = new List<CS.SyntaxObject>();
 
             var thisTypeInfo = WellKnownTypes.ProtocolStjSerializerContext;
@@ -84,7 +86,6 @@ namespace Xilium.Crdtp.Emitters
                 baseType: WellKnownTypes.JsonSerializerContext.GetFullyQualifiedName(),
                 attributes: attributes);
             declarations.Add(typeDeclaration);
-            */
 
             return declarations;
         }

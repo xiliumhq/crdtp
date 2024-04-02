@@ -33,6 +33,8 @@ namespace Xilium.Crdtp.Model
 
         public override ImmutableArray<string> Description => _objectTypeSymbol.Description;
 
+        public override bool IsValueType => false;
+
         internal override Emitter? GetEmitter()
         {
             return new ObjectTypeEmitter(Context, this);

@@ -8,6 +8,7 @@
 
         public override string Name => "protocol_boolean";
         public override string GetFullyQualifiedName() => "bool";
+        public override bool UseInSerializationContext() => false;
 
         public override bool IsValueType => true;
     }

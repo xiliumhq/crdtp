@@ -21,6 +21,11 @@ namespace Xilium.Crdtp.Model
             return "System.Collections.Generic.List<" + ElementType.GetFullyQualifiedName() + ">";
         }
 
+        public override string GetTypeInfoPropertyName()
+        {
+            return "ListOf" + ElementType.GetTypeInfoPropertyName();
+        }
+
         public TypeInfo ElementType => _elementType;
 
         public override bool IsValueType => false;

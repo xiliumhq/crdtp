@@ -107,10 +107,10 @@ internal sealed class StjTypeInfoResolver
             }
         }
 
-#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
-        // By default fallback to reflection-based resolver.
-        contexts.Add(new DefaultJsonTypeInfoResolver());
-#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+        // #pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+        // // By default fallback to reflection-based resolver.
+        // contexts.Add(new DefaultJsonTypeInfoResolver());
+        // #pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
         var typeInfoResolver = JsonTypeInfoResolver.Combine(
             contexts.ToArray());

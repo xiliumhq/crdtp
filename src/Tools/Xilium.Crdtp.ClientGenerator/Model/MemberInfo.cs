@@ -28,5 +28,13 @@ namespace Xilium.Crdtp.Model
             }
             return default;
         }
+
+        public virtual string GetTypeInfoPropertyName()
+        {
+            return Domain?.Name + "_" + GetOwnTypeInfoPropertyName();
+        }
+
+        public virtual string GetOwnTypeInfoPropertyName() => Name;
+        public virtual bool UseInSerializationContext() => true;
     }
 }

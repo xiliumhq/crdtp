@@ -9,6 +9,7 @@
         public override string Name => "protocol_number";
 
         public override string GetFullyQualifiedName() => "double";
+        public override bool UseInSerializationContext() => false;
 
         public override bool IsValueType => true;
     }

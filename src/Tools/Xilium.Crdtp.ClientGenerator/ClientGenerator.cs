@@ -135,8 +135,6 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(x, stjConverterEmitter);
                             }
-
-                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -147,8 +145,6 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(x, stjConverterEmitter);
                             }
-
-                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -159,17 +155,11 @@ namespace Xilium.Crdtp
                             {
                                 context.AddStjConverterEmitter(x, stjConverterEmitter);
                             }
-
-                            context.AddToSerializerContext(x);
                         }
                         break;
 
                     case IntrinsicTypeInfo x:
-                        {
-                            // no-op
-
-                            // TODO: context.AddToSerializerContext(x);
-                        }
+                        // no-op
                         break;
 
                     default: throw Error.NotImplemented("Invalid type info type: {0}", typeInfo.GetType().Name);
@@ -189,6 +179,8 @@ namespace Xilium.Crdtp
                             {
                                 emitter.Emit();
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -199,6 +191,8 @@ namespace Xilium.Crdtp
                             {
                                 emitter.Emit();
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
@@ -209,11 +203,15 @@ namespace Xilium.Crdtp
                             {
                                 emitter.Emit();
                             }
+
+                            context.AddToSerializerContext(x);
                         }
                         break;
 
                     case IntrinsicTypeInfo x:
-                        // no-op
+                        {
+                            context.AddToSerializerContext(x);
+                        }
                         break;
 
                     default: throw Error.NotImplemented("Invalid type info type: {0}", typeInfo.GetType().Name);

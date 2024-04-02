@@ -79,8 +79,9 @@ namespace Xilium.Crdtp.Tools
                     Enabled = true,
                     CamelCaseNamingConvention = true,
 
-                    Trimmable = true,
-                    Obfuscation = true,
+                    Trimmable = false,
+                    Obfuscation = false,
+                    SerializationContext = true,
                 },
 
                 // TODO: make configurable

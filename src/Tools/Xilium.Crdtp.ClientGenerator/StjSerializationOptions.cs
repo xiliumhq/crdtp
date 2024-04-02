@@ -14,5 +14,7 @@
         /// Emit property names if assembly will be obfuscated.
         /// </summary>
         public bool Obfuscation { get; set; }
+
+        public bool SerializationContext { get; set; }
     }
 }

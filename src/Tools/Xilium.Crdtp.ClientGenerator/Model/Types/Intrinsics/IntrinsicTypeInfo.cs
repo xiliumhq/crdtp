@@ -20,6 +20,6 @@ namespace Xilium.Crdtp.Model
 
         public override ImmutableArray<string> Description => ImmutableArray<string>.Empty;
 
-        protected override bool TrackReachability => false;
+        protected override bool TrackReachability => true;
     }
 }

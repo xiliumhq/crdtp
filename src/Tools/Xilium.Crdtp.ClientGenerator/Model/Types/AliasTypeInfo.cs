@@ -35,6 +35,27 @@ namespace Xilium.Crdtp.Model
 
         public TypeInfo UnderlyingType => _underlyingTypeInfo;
 
+        public override bool IsValueType
+        {
+            get
+            {
+                if (_underlyingTypeInfo is ArrayTypeInfo)
+                {
+                    return false;
+                }
+                else if (_underlyingTypeInfo is DictionaryTypeInfo)
+                {
+                    return false;
+                }
+                else
+                {
+                    // Treat any alias for primitive type as value-type (e.g. including string)
+                    Check.That(_underlyingTypeInfo is IntrinsicTypeInfo);
+                    return true;
+                }
+            }
+        }
+
         public override bool Mark(SymbolInfoFlags flags)
         {
             var marked = base.Mark(flags);
