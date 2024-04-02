@@ -11,6 +11,7 @@ internal sealed class DefaultJsonSerializationContextFactory : StjSerializationC
         {
             new DoubleJsonConverter(),
             new StringJsonConverter(),
+            new FloatJsonConverter(),
             // TODO(dmitry.azaraev): Serializing/Deserializing Unit type is should not be needed, but need do some tests before removal.
             new UnitJsonConverter(),
         };

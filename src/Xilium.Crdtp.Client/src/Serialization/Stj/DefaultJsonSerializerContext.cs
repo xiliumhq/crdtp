@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xilium.Crdtp.Core;
 
@@ -6,6 +7,9 @@ namespace Xilium.Crdtp.Client.Serialization;
 
 [JsonSerializable(typeof(CrdtpErrorResponse))]
 [JsonSerializable(typeof(Unit))]
+// Commonly used collections with protocol "any" type.
+[JsonSerializable(typeof(Dictionary<string, object>))]
+[JsonSerializable(typeof(List<object>))]
 [JsonSourceGenerationOptions(
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     GenerationMode = JsonSourceGenerationMode.Metadata,
