@@ -6,7 +6,7 @@
 
     <DefineConstants>$(DefineConstants);XI_CORE_PUBLIC</DefineConstants>
   </PropertyGroup>
-  <Import Project="..\..\..\Tools.props" />
+  <Import Project="..\..\Tools\Tools.props" />
 
   <ItemGroup>
     <Compile Include="Check.Argument.cs" />

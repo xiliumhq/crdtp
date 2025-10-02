@@ -1,0 +1,6 @@
+﻿<Project>
+  <Import Project="..\..\..\..\build\Xilium.Crdtp.Tools.props" Condition=" Exists('..\..\..\..\build\Xilium.Crdtp.Tools.props') " />
+  <PropertyGroup>
+    <TargetFramework Condition=" '$(TargetFramework)' == '' and '$(TargetFrameworks)' == '' ">net8.0</TargetFramework>
+  </PropertyGroup>
+</Project>

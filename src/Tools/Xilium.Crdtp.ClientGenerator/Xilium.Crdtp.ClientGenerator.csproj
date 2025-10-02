@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Tools.props" />
+
   <PropertyGroup>
     <RootNamespace>Xilium.Crdtp</RootNamespace>
   </PropertyGroup>

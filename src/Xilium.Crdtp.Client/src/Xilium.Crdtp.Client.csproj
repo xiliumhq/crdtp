@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\..\..\..\build\Xilium.Crdtp.Client.props" Condition=" Exists('..\..\..\..\..\build\Xilium.Crdtp.Client.props') " />
+
   <PropertyGroup>
     <IsTrimmable>true</IsTrimmable>
     <!--
@@ -19,10 +21,11 @@
     <Description>Client library which let you to communicate with agent hosts based on Chrome DevTools Protocol, specifically Chromium, Chrome and other Blink-based browsers.</Description>
   </PropertyGroup>
 
-  <Import Project="..\..\..\Client.props" />
-  <Import Project="..\..\..\Branding.props" />
-
   <PropertyGroup>
+    <!-- Default target framework -->
+    <TargetFramework Condition=" '$(TargetFramework)' == '' and '$(TargetFrameworks)' == '' ">net8.0</TargetFramework>
+    <AssemblyNamePrefix Condition=" '$(AssemblyNamePrefix)' == '' ">Xilium</AssemblyNamePrefix>
+
     <AssemblyName>$(AssemblyNamePrefix).Crdtp.Client</AssemblyName>
   </PropertyGroup>
 
