@@ -30,7 +30,7 @@ namespace Xilium.Crdtp.Pdl
 
 
         //Ported from https://chromium.googlesource.com/chromium/src/+/refs/heads/master/third_party/inspector_protocol/pdl.py
-        public static ProtocolSyntax Parse(StreamReader streamReader)
+        public static ProtocolSyntax Parse(StreamReader streamReader, string fileName)
         {
             var mapBinaryToString = false;
             var regexOptions = RegexOptions.Singleline | RegexOptions.Compiled;
@@ -74,6 +74,33 @@ namespace Xilium.Crdtp.Pdl
                         Description = description
                     };
                     protocol.Domains.Add(domain);
+                    continue;
+                }
+
+                match = Regex.Match(line, "^include (.*)", regexOptions);
+                if (match.Success)
+                {
+                    var includedFilename = match.Groups[1].Value;
+                    if (Path.IsPathRooted(includedFilename))
+                    {
+                        throw new InvalidOperationException("Only relative paths are supported in includes");
+                    }
+
+                    var resolvedPath = Path.GetFullPath(
+                        Path.Combine(Path.GetDirectoryName(fileName)!, includedFilename));
+
+                    // TODO: Track source set (e.g. all referenced files)
+                    ProtocolSyntax syntaxTree;
+                    {
+                        using var stream = File.OpenRead(resolvedPath);
+                        using var reader = new StreamReader(stream);
+                        syntaxTree = Parse(reader, resolvedPath);
+                    }
+
+                    foreach (var x in syntaxTree.Domains)
+                    {
+                        protocol.Domains.Add(x);
+                    }
                     continue;
                 }
 

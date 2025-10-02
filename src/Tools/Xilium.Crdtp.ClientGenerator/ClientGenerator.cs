@@ -258,7 +258,7 @@ namespace Xilium.Crdtp
                 if (path.EndsWith(".pdl", StringComparison.OrdinalIgnoreCase))
                 {
                     using var reader = new IO.StreamReader(stream);
-                    syntaxTree = PdlReader.Parse(reader);
+                    syntaxTree = PdlReader.Parse(reader, path);
                 }
                 else if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
