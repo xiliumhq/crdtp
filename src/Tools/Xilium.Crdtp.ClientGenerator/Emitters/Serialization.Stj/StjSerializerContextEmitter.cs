@@ -11,7 +11,9 @@ namespace Xilium.Crdtp.Emitters
             : base(context)
         { }
 
-        public override bool ShouldEmit => Context.Options.Stj.Enabled;
+        public override bool ShouldEmit => Context.Options.Stj.Enabled
+            && Context.Options.Stj.SerializationContext
+            && !Context.Options.Stj.Legacy;
 
         protected override string GetOutputItemPath() => $"+Serialization/Stj/{WellKnownTypes.ProtocolStjSerializerContext.Name}.g.cs";
 

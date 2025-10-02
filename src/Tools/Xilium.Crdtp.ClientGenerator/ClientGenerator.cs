@@ -121,6 +121,7 @@ namespace Xilium.Crdtp
             // Pass: Emitting Types
             var stjSerializationContextFactoryEmitter = new StjSerializationContextFactoryEmitter(context);
             var stjSerializerContextEmitter = new StjSerializerContextEmitter(context);
+            var stjLegacySerializerOptionsEmitter = new StjLegacySerializerOptionsEmitter(context);
 
             // Pass: Collect Convertors to emit
             foreach (var typeInfo in context.GetReachableNodes<TypeInfo>())
@@ -225,6 +226,7 @@ namespace Xilium.Crdtp
             }
             stjSerializationContextFactoryEmitter.Emit();
             stjSerializerContextEmitter.Emit();
+            stjLegacySerializerOptionsEmitter.Emit();
 
             // Pass: Emitting "DomainApi" types
             foreach (var domainInfo in context.GetReachableNodes<DomainInfo>())
@@ -233,7 +235,9 @@ namespace Xilium.Crdtp
             }
 
             // Pass: Emitting "ProtocolApi" type
-            new ProtocolApiEmitter(context, stjSerializationContextFactoryEmitter).Emit();
+            new ProtocolApiEmitter(context,
+                stjSerializationContextFactoryEmitter,
+                stjLegacySerializerOptionsEmitter).Emit();
 
             // Writing "Protocol.g.props" file.
             new ProjectEmitter(context).Emit();

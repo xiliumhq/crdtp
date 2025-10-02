@@ -18,6 +18,13 @@ namespace Xilium.Crdtp.Tools
         private string? CommandResponseAnonymousTypePrefix { get; }
         private string? EventAnonymousTypePrefix { get; }
 
+        private bool NonThrowingMethods { get; }
+
+        private bool StjLegacy { get; }
+        private bool StjSerializationContext { get; }
+        private bool StjTrimmable { get; }
+        private bool StjObfuscation { get; }
+
         private bool Verbose { get; }
 
         public GenerateCommand(
@@ -32,6 +39,11 @@ namespace Xilium.Crdtp.Tools
             string? commandRequestAnonymousTypePrefix,
             string? commandResponseAnonymousTypePrefix,
             string? eventAnonymousTypePrefix,
+            bool? nonThrowingMethods,
+            bool? stjLegacy,
+            bool? stjSerializationContext,
+            bool? stjTrimmable,
+            bool? stjObfuscation,
             bool verbose)
         {
             InputPaths = input;
@@ -52,6 +64,13 @@ namespace Xilium.Crdtp.Tools
             CommandRequestAnonymousTypePrefix = string.IsNullOrEmpty(commandRequestAnonymousTypePrefix) ? null : commandRequestAnonymousTypePrefix;
             CommandResponseAnonymousTypePrefix = string.IsNullOrEmpty(commandResponseAnonymousTypePrefix) ? null : commandResponseAnonymousTypePrefix;
             EventAnonymousTypePrefix = string.IsNullOrEmpty(eventAnonymousTypePrefix) ? null : eventAnonymousTypePrefix;
+
+            StjLegacy = stjLegacy ?? false;
+            StjSerializationContext = stjSerializationContext ?? !StjLegacy;
+            StjTrimmable = stjTrimmable ?? false;
+            StjObfuscation = stjObfuscation ?? false;
+
+            NonThrowingMethods = nonThrowingMethods ?? !StjLegacy;
 
             Verbose = verbose;
         }
@@ -79,9 +98,10 @@ namespace Xilium.Crdtp.Tools
                     Enabled = true,
                     CamelCaseNamingConvention = true,
 
-                    Trimmable = false,
-                    Obfuscation = false,
-                    SerializationContext = true,
+                    Legacy = StjLegacy,
+                    SerializationContext = StjSerializationContext,
+                    Trimmable = StjTrimmable,
+                    Obfuscation = StjObfuscation,
                 },
 
                 // TODO: make configurable
@@ -92,6 +112,8 @@ namespace Xilium.Crdtp.Tools
                 CommandRequestAnonymousTypePrefix = CommandRequestAnonymousTypePrefix,
                 CommandResponseAnonymousTypePrefix = CommandResponseAnonymousTypePrefix,
                 EventAnonymousTypePrefix = EventAnonymousTypePrefix,
+
+                NonThrowingMethods = NonThrowingMethods,
 
                 // TODO: This should be customizable. Now emitted all commands / events, but domains and types
                 // is not emitted by default. For example NetworkCached resource is no more emitted (because it is not in-use).

@@ -62,14 +62,14 @@ namespace Xilium.Crdtp.Emitters
 
             foreach (var command in commands.OrderBy(x => x.Name))
             {
-                // TODO: Add option to generate invoke variations as requested
-                // e.g. throwing vs non-throwing
-
                 var throwingMethod = MakeCommandMethod(command, getCrdtpSessionExpr, throwingMethod: true);
                 domainApiTypeMembers.Add(throwingMethod);
 
-                var nonThrowingMethod = MakeCommandMethod(command, getCrdtpSessionExpr, throwingMethod: false);
-                domainApiTypeMembers.Add(nonThrowingMethod);
+                if (Context.Options.NonThrowingMethods)
+                {
+                    var nonThrowingMethod = MakeCommandMethod(command, getCrdtpSessionExpr, throwingMethod: false);
+                    domainApiTypeMembers.Add(nonThrowingMethod);
+                }
             }
 
             foreach (var eventInfo in events.OrderBy(x => x.Name))

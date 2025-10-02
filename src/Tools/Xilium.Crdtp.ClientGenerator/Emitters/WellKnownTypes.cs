@@ -11,11 +11,13 @@ namespace Xilium.Crdtp.Emitters
         public WellKnownTypeInfo StjSerializationContextFactoryTypeInfo { get; }
         public WellKnownTypeInfo JsonConverterTypeInfo { get; }
         public WellKnownTypeInfo JsonSerializerContext { get; }
+        public WellKnownTypeInfo StjLegacySerializerOptionsTypeInfo { get; }
 
         // Generated
         public WellKnownTypeInfo ProtocolApiTypeInfo { get; }
         public WellKnownTypeInfo ProtocolStjSerializationContextFactoryTypeInfo { get; }
         public WellKnownTypeInfo ProtocolStjSerializerContext { get; }
+        public WellKnownTypeInfo ProtocolStjLegacySerializerOptionsTypeInfo { get; }
 
         public WellKnownTypes(Context context)
         {
@@ -34,6 +36,10 @@ namespace Xilium.Crdtp.Emitters
                 "JsonSerializerContext",
                 "System.Text.Json.Serialization");
 
+            StjLegacySerializerOptionsTypeInfo = new WellKnownTypeInfo(context,
+                "StjSerializerOptions",
+                "Xilium.Crdtp.Client.Serialization");
+
             // Generated
             ProtocolApiTypeInfo = new WellKnownTypeInfo(context,
                 Context.Options.ProtocolApiTypeName,
@@ -45,6 +51,10 @@ namespace Xilium.Crdtp.Emitters
 
             ProtocolStjSerializerContext = new WellKnownTypeInfo(context,
                 "ProtocolStjSerializerContext",
+                Context.NamingPolicy.GetNamespaceName(null as string));
+
+            ProtocolStjLegacySerializerOptionsTypeInfo = new WellKnownTypeInfo(context,
+                "ProtocolStjSerializerOptions",
                 Context.NamingPolicy.GetNamespaceName(null as string));
         }
 

@@ -4,19 +4,18 @@ using CS = Xilium.Chromium.DevTools.Syntax;
 
 namespace Xilium.Crdtp.Emitters
 {
-    internal sealed class StjSerializationContextFactoryEmitter : CompilationUnitEmitter
+    internal sealed class StjLegacySerializerOptionsEmitter : CompilationUnitEmitter
     {
-        public StjSerializationContextFactoryEmitter(Context context)
+        public StjLegacySerializerOptionsEmitter(Context context)
             : base(context)
         { }
 
         public override bool ShouldEmit => Context.Options.Stj.Enabled
-            && Context.Options.Stj.SerializationContext
-            && !Context.Options.Stj.Legacy;
+            && Context.Options.Stj.Legacy;
 
-        protected override string GetOutputItemPath() => $"+Serialization/Stj/{WellKnownTypes.ProtocolStjSerializationContextFactoryTypeInfo.Name}.g.cs";
+        protected override string GetOutputItemPath() => $"+Serialization/Stj/{WellKnownTypes.ProtocolStjLegacySerializerOptionsTypeInfo.Name}.g.cs";
 
-        protected override string GetNamespace() => WellKnownTypes.ProtocolStjSerializationContextFactoryTypeInfo.Namespace;
+        protected override string GetNamespace() => WellKnownTypes.ProtocolStjLegacySerializerOptionsTypeInfo.Namespace;
 
         protected override List<CS.SyntaxObject> GetNamespaceContent()
         {
@@ -24,7 +23,7 @@ namespace Xilium.Crdtp.Emitters
 
             var typeMembers = new List<CS.SyntaxObject>();
 
-            var thisTypeInfo = WellKnownTypes.ProtocolStjSerializationContextFactoryTypeInfo;
+            var thisTypeInfo = WellKnownTypes.ProtocolStjLegacySerializerOptionsTypeInfo;
 
             // public static readonly StjSerializerOptions Instance = new ProtocolStjSerializerOptions();
             var instanceFieldDecl = new CS.FieldDeclaration(
@@ -45,31 +44,7 @@ namespace Xilium.Crdtp.Emitters
                 subconstructor: null
                 ));
 
-            // CreateJsonSerializerContext
-            {
-                var methodBody = new List<CS.SyntaxObject>();
-                if (Context.Options.Stj.SerializationContext)
-                {
-                    methodBody.Add(
-                        new CS.Raw($"return new {WellKnownTypes.ProtocolStjSerializerContext.GetFullyQualifiedName()}();")
-                        );
-                }
-                else
-                {
-                    methodBody.Add(
-                        new CS.Raw("return null;")
-                        );
-                };
-                typeMembers.Add(new CS.MethodDeclaration(
-                    name: "CreateJsonSerializerContext",
-                    parameters: null,
-                    returnParameter: new CS.Parameter(null!, WellKnownTypes.JsonSerializerContext.GetFullyQualifiedName() + "?"),
-                    modifiers: CS.CSharpModifiers.Protected | CS.CSharpModifiers.Override,
-                    members: methodBody
-                    ));
-            }
-
-            // GetJsonConverters
+            // GetConvertersCore
             {
                 var methodBody = new List<CS.SyntaxObject>();
                 methodBody.Add(new CS.Raw($"return new {WellKnownTypes.JsonConverterTypeInfo.GetFullyQualifiedName()}[]"));
@@ -84,9 +59,9 @@ namespace Xilium.Crdtp.Emitters
                 methodBody.Add(new CS.Raw("};"));
 
                 typeMembers.Add(new CS.MethodDeclaration(
-                    name: "GetJsonConverters",
+                    name: "GetConvertersCore",
                     parameters: null,
-                    returnParameter: new CS.Parameter(null!, WellKnownTypes.JsonConverterTypeInfo.GetFullyQualifiedName() + "[]"),
+                    returnParameter: new CS.Parameter(null!, WellKnownTypes.GetICollectionOf(WellKnownTypes.JsonConverterTypeInfo).GetFullyQualifiedName()),
                     modifiers: CS.CSharpModifiers.Protected | CS.CSharpModifiers.Override,
                     members: methodBody
                     ));
@@ -96,7 +71,7 @@ namespace Xilium.Crdtp.Emitters
                 name: thisTypeInfo.Name,
                 modifiers: CS.TypeModifiers.Internal | CS.TypeModifiers.Sealed,
                 members: typeMembers,
-                baseType: WellKnownTypes.StjSerializationContextFactoryTypeInfo.GetFullyQualifiedName());
+                baseType: WellKnownTypes.StjLegacySerializerOptionsTypeInfo.GetFullyQualifiedName());
             declarations.Add(typeDeclaration);
 
             return declarations;

@@ -16,6 +16,8 @@ namespace Xilium.Crdtp
         public bool EmitTypeAnalysis { get; set; } = false;
         public bool EmitPartialTypes { get; set; } = false;
 
+        public bool NonThrowingMethods { get; set; }
+
         public StjSerializationOptions Stj { get; set; } = default!; // TODO: apply defaults
 
         public string ProtocolApiTypeName { get; set; } = "ProtocolApi";
@@ -42,5 +44,7 @@ namespace Xilium.Crdtp
         public Func<TypeSymbol, bool>? TypeFilter { get; set; }
         public Func<CommandSymbol, bool>? CommandFilter { get; set; }
         public Func<EventSymbol, bool>? EventFilter { get; set; }
+
+        public bool UseCodeAnalysis => !Stj.Legacy;
     }
 }

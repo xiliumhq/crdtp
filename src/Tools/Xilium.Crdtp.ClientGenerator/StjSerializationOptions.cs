@@ -16,5 +16,7 @@
         public bool Obfuscation { get; set; }
 
         public bool SerializationContext { get; set; }
+
+        public bool Legacy { get; set; }
     }
 }

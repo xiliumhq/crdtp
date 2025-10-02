@@ -25,10 +25,14 @@ namespace Xilium.Crdtp.Emitters
             {
                 "System",
                 "System.Collections.Generic",
-                "System.Diagnostics.CodeAnalysis",
                 // "System.Threading"
                 // "System.Threading.Tasks"
             };
+
+            if (Context.Options.UseCodeAnalysis)
+            {
+                usingNamespaces.Add("System.Diagnostics.CodeAnalysis");
+            }
 
             var typeAttributes = Context.CSharp.CreateAttributeList(_typeInfo, usingNamespaces);
 

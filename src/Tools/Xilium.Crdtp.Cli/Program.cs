@@ -81,6 +81,13 @@ namespace Xilium.Crdtp.Cli
                 new Option<string?>("--command-response-anonymous-type-prefix"),
                 new Option<string?>("--event-anonymous-type-prefix"),
 
+                new Option<bool?>("--non-throwing-methods"),
+
+                new Option<bool?>("--stj-legacy"),
+                new Option<bool?>("--stj-serialization-context"),
+                new Option<bool?>("--stj-trimmable"),
+                new Option<bool?>("--stj-obfuscation"),
+
                 new Option<bool>("--verbose"),
             };
             command.AddAlias("gen");
