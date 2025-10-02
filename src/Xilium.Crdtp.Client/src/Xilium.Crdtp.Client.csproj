@@ -98,9 +98,17 @@
     <Compile Include="Xi.Threading\ThreadPoolSequencedTaskRunner.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Net.WebSockets.Client.Managed" Version="1.0.22" />
     <PackageReference Include="System.Text.Json" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Include="..\..\Common\Compat\CompilerLoweringPreserveAttribute.cs" />
+    <Compile Include="..\..\Common\Compat\DynamicallyAccessedMembersAttribute.cs" />
+    <Compile Include="..\..\Common\Compat\DynamicallyAccessedMemberTypes.cs" />
+    <Compile Include="..\..\Common\Compat\DynamicDependencyAttribute.cs" />
+    <Compile Include="..\..\Common\Compat\UnconditionalSuppressMessageAttribute.cs" />
   </ItemGroup>
 
 </Project>
