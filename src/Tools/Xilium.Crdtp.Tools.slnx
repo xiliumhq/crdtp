@@ -1,0 +1,13 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../Common/Xilium.Core/Xilium.Core.csproj" />
+  <Project Path="Xilium.Crdtp.Cli/Xilium.Crdtp.Cli.csproj" />
+  <Project Path="Xilium.Crdtp.ClientGenerator/Xilium.Crdtp.ClientGenerator.csproj" />
+  <Project Path="Xilium.Crdtp.CSharp.Syntax/Xilium.Crdtp.CSharp.Syntax.csproj" />
+  <Project Path="Xilium.Crdtp.Pdl/Xilium.Crdtp.Pdl.csproj" />
+  <Project Path="Xilium.Crdtp.Sema/Xilium.Crdtp.Sema.csproj" />
+</Solution>

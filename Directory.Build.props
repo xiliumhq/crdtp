@@ -20,7 +20,7 @@
     <!-- TODO: <Description></Description> -->
     <!-- TODO: <PackageProjectUrl></PackageProjectUrl> -->
     <!-- TODO: <PackageIcon></PackageIcon> -->
-    <Copyright>Copyright (c) 2021 Xilium</Copyright>
+    <Copyright>Copyright (c) 2025 Xilium</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/xiliumhq/crdtp</RepositoryUrl>

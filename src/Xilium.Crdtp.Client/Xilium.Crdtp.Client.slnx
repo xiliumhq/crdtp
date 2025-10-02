@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Xilium.Crdtp.Client.csproj" />
+  <Project Path="tests/Xilium.Crdtp.Client.Tests.csproj" />
+</Solution>
