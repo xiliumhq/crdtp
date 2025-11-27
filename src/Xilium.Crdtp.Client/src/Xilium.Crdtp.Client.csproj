@@ -61,6 +61,7 @@
     <Compile Include="CrdtpResponse.cs" />
     <Compile Include="CrdtpSessionHandler.cs" />
     <Compile Include="Exceptions\CrdtpConnectionException.cs" />
+    <Compile Include="Exceptions\CrdtpDispatchException.cs" />
     <Compile Include="Exceptions\CrdtpErrorResponseException.cs" />
     <Compile Include="CrdtpFeatures.cs" />
     <Compile Include="CrdtpRequest.cs" />

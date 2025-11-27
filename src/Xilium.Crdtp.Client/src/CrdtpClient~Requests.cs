@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Xilium.Crdtp.Client.Dispatching;
+using Xilium.Crdtp.Client.Exceptions;
 
 namespace Xilium.Crdtp.Client;
 
@@ -138,7 +139,12 @@ partial class CrdtpClient
         else if (!string.IsNullOrEmpty(dispatchable.Method)) // Event
         {
             if (!TryGetSession(dispatchable.SessionId, out var session))
-                throw Error.InvalidOperation("Session not found.");
+            {
+                throw new CrdtpDispatchException("Unable to dispatch event: session not found.",
+                    dispatchable.SessionId,
+                    dispatchable.CallId,
+                    dispatchable.Method);
+            }
             session.DispatchEventInternal(dispatchable);
         }
         else
