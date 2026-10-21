@@ -59,9 +59,10 @@ namespace Xilium.Crdtp.Client.Dispatching
                     Check.That(result != null); // TODO: Better error reporting. Not sure if protocol allow null in that case.
                 }
 
-                if (_taskRunner != null)
+                var taskRunner = _taskRunner;
+                if (taskRunner is not null && TaskRunner.Current != taskRunner)
                 {
-                    _taskRunner.PostTask(_cachedAction, result);
+                    taskRunner.PostTask(_cachedAction, result);
                 }
                 else
                 {

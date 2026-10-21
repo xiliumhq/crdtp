@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xilium.Crdtp.Client.Dispatching;
 using Xilium.Crdtp.Core;
+using Xilium.Threading;
 
 namespace Xilium.Crdtp.Client
 {
@@ -141,7 +142,7 @@ namespace Xilium.Crdtp.Client
 
                     var response = new CrdtpResponse<TResponse>(result!);
                     var taskRunner = Session.TaskRunner;
-                    if (taskRunner != null)
+                    if (taskRunner is not null && TaskRunner.Current != taskRunner)
                     {
                         // TODO: This should be optimized, to avoid closure allocation
                         taskRunner.PostTask(() => { _ = _tcs.TrySetResult(response); });
